@@ -9,7 +9,7 @@
 
 
 # Routing 
-- [] Use the latest laravel wayfinder routing, in this app it is already integrated
+- [] Use the latest laravel wayfinder routing, in this app it is already integrated.
 
 ```php
 Example Usage:
