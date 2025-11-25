@@ -1,5 +1,4 @@
 import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
-import { useState } from 'react';
 
 interface TaskLog {
     id: number;
@@ -14,6 +13,7 @@ interface TaskLog {
 interface PageProps {
     taskLogs: TaskLog[];
     isAdmin: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
 }
 
