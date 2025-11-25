@@ -19,7 +19,7 @@ interface PageProps {
 
 export default function TaskLogger() {
     const { props } = usePage<PageProps>();
-    const { taskLogs, isAdmin } = props;
+    const { taskLogs } = props;
     const { data, setData, post, processing, errors, reset } = useForm({
         title: '',
         description: '',

@@ -25,6 +25,7 @@ interface TodoParent {
 
 interface PageProps {
     todoParents: TodoParent[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
 }
 

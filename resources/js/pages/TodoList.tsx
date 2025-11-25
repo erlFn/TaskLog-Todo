@@ -21,12 +21,13 @@ interface TodoParent {
 interface PageProps {
     todoParents: TodoParent[];
     isAdmin: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
 }
 
 export default function TodoList() {
     const { props } = usePage<PageProps>();
-    const { todoParents, isAdmin } = props;
+    const { todoParents } = props;
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editText, setEditText] = useState('');
 
@@ -35,13 +36,13 @@ export default function TodoList() {
         description: '',
     });
 
-    const itemForm = useForm({
-        text: '',
-        category: 'Personal',
-        important: false,
-    });
+    // const itemForm = useForm({
+    //     text: '',
+    //     category: 'Personal',
+    //     important: false,
+    // });
 
-    const categories = ['Personal', 'Work', 'Shopping', 'Health'];
+    // const categories = ['Personal', 'Work', 'Shopping', 'Health'];
 
     const handleLogout = (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,13 +56,13 @@ export default function TodoList() {
         });
     };
 
-    const handleAddItem = (parentId: number) => {
-        if (itemForm.data.text.trim()) {
-            itemForm.post(`/todolist/${parentId}/item`, {
-                onSuccess: () => itemForm.reset(),
-            });
-        }
-    };
+    // const handleAddItem = (parentId: number) => {
+    //     if (itemForm.data.text.trim()) {
+    //         itemForm.post(`/todolist/${parentId}/item`, {
+    //             onSuccess: () => itemForm.reset(),
+    //         });
+    //     }
+    // };
 
     const handleToggleComplete = (itemId: number, completed: boolean) => {
         router.put(`/todolist/item/${itemId}`, {
