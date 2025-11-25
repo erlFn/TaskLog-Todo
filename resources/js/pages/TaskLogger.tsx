@@ -1,54 +1,51 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 
+interface TaskLog {
+    id: number;
+    title: string;
+    description: string;
+    status: string;
+    priority: string;
+    reviewed: boolean;
+    created_at: string;
+}
+
+interface PageProps {
+    taskLogs: TaskLog[];
+    isAdmin: boolean;
+    [key: string]: any;
+}
+
 export default function TaskLogger() {
-    const [tasks, setTasks] = useState([
-        {
-            id: 1,
-            title: 'Design Homepage',
-            description: 'Create wireframes and mockups for the homepage',
-            status: 'To Do',
-            priority: 'High',
-            createdAt: '2 hours ago'
-        },
-        {
-            id: 2,
-            title: 'API Integration',
-            description: 'Integrate with third-party API services',
-            status: 'In Progress',
-            priority: 'Medium',
-            createdAt: '1 day ago'
-        },
-        {
-            id: 3,
-            title: 'User Testing',
-            description: 'Conduct user testing sessions and gather feedback',
-            status: 'In Review',
-            priority: 'Low',
-            createdAt: '3 days ago'
-        },
-        {
-            id: 4,
-            title: 'Database Optimization',
-            description: 'Optimize database queries and indexes for better performance',
-            status: 'To Do',
-            priority: 'High',
-            createdAt: '4 hours ago'
-        },
-    ]);
+    const { props } = usePage<PageProps>();
+    const { taskLogs, isAdmin } = props;
+    const { data, setData, post, processing, errors, reset } = useForm({
+        title: '',
+        description: '',
+        status: 'To Do',
+        priority: 'Medium',
+    });
 
     const statusOptions = ['To Do', 'In Progress', 'In Review', 'Done', 'Closed'];
     const priorityOptions = ['Low', 'Medium', 'High'];
 
-    const handleLogout = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        window.location.href = '/';
+        post('/tasklogger', {
+            onSuccess: () => reset(),
+        });
     };
 
     const handleStatusChange = (taskId: number, newStatus: string) => {
-        setTasks(tasks.map(task => 
-            task.id === taskId ? { ...task, status: newStatus } : task
-        ));
+        router.put(`/tasklogger/${taskId}`, {
+            status: newStatus
+        });
+    };
+
+    const handleLogout = (e: React.FormEvent) => {
+        e.preventDefault();
+        router.post('/logout');
     };
 
     const getStatusColor = (status: string) => {
@@ -76,14 +73,13 @@ export default function TaskLogger() {
             <Head title="TaskLogger" />
             
             <div className="min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white">
-                {/* Background Pattern */}
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
                 
                 <div className="relative z-10 flex">
-                    {/* Sidebar - Fixed */}
+                    {/* Sidebar */}
                     <div className="w-64 bg-white/5 backdrop-blur-sm border-r border-white/10 shadow-lg flex flex-col fixed left-0 top-0 h-screen">
                         <div className="p-6 border-b border-white/10">
-                            <h1 className="text-2xl font-bold text-white">TaskLog - Todo</h1>
+                            <h1 className="text-2xl font-bold text-white">PROJECT TASK</h1>
                         </div>
                         <nav className="p-4 flex-1">
                             <ul className="space-y-2">
@@ -113,14 +109,9 @@ export default function TaskLogger() {
                                 </li>
                             </ul>
                         </nav>
-
-                        {/* Logout Button */}
                         <div className="p-4 border-t border-white/10">
                             <form onSubmit={handleLogout}>
-                                <button
-                                    type="submit"
-                                    className="w-full flex items-center px-4 py-3 text-red-400 hover:bg-red-400/10 rounded-lg transition-all duration-200 border border-red-400/30 hover:border-red-400/50"
-                                >
+                                <button type="submit" className="w-full flex items-center px-4 py-3 text-red-400 hover:bg-red-400/10 rounded-lg transition-all duration-200 border border-red-400/30 hover:border-red-400/50">
                                     <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                     </svg>
@@ -137,24 +128,41 @@ export default function TaskLogger() {
                             <p className="text-gray-300 mt-2">Manage and log your tasks with status tracking</p>
                         </div>
 
-                        {/* Task Logger Content */}
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            {/* Task Form - Fixed */}
+                            {/* Task Form */}
                             <div className="lg:col-span-1">
                                 <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 sticky top-8">
                                     <h2 className="text-xl font-semibold text-white mb-4">Add New Task</h2>
-                                    <form className="space-y-4">
+                                    <form onSubmit={handleSubmit} className="space-y-4">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-300 mb-1">Task Title</label>
-                                            <input type="text" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300" placeholder="Enter task title" />
+                                            <input 
+                                                type="text" 
+                                                value={data.title}
+                                                onChange={e => setData('title', e.target.value)}
+                                                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300" 
+                                                placeholder="Enter task title" 
+                                            />
+                                            {errors.title && <div className="text-red-400 text-sm mt-1">{errors.title}</div>}
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
-                                            <textarea className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300" rows={3} placeholder="Enter task description"></textarea>
+                                            <textarea 
+                                                value={data.description}
+                                                onChange={e => setData('description', e.target.value)}
+                                                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300" 
+                                                rows={3} 
+                                                placeholder="Enter task description"
+                                            ></textarea>
+                                            {errors.description && <div className="text-red-400 text-sm mt-1">{errors.description}</div>}
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-gray-300 mb-1">Status</label>
-                                            <select className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
+                                            <select 
+                                                value={data.status}
+                                                onChange={e => setData('status', e.target.value)}
+                                                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                                            >
                                                 {statusOptions.map(option => (
                                                     <option key={option} value={option}>{option}</option>
                                                 ))}
@@ -162,34 +170,40 @@ export default function TaskLogger() {
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-gray-300 mb-1">Priority</label>
-                                            <select className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
+                                            <select 
+                                                value={data.priority}
+                                                onChange={e => setData('priority', e.target.value)}
+                                                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                                            >
                                                 {priorityOptions.map(option => (
                                                     <option key={option} value={option}>{option}</option>
                                                 ))}
                                             </select>
                                         </div>
-                                        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                                            Add Task
+                                        <button 
+                                            type="submit" 
+                                            disabled={processing}
+                                            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:transform-none"
+                                        >
+                                            {processing ? 'Adding Task...' : 'Add Task'}
                                         </button>
                                     </form>
                                 </div>
                             </div>
 
-                            {/* Task List - Scrollable */}
+                            {/* Task List */}
                             <div className="lg:col-span-2 flex flex-col">
                                 <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 flex-1 flex flex-col">
-                                    {/* Header */}
                                     <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-xl font-semibold text-white">Task List</h2>
+                                        <h2 className="text-xl font-semibold text-white">Your Task Logs</h2>
                                         <div className="text-sm text-gray-300">
-                                            {tasks.length} tasks
+                                            {taskLogs.length} tasks
                                         </div>
                                     </div>
 
-                                    {/* Scrollable Task List */}
                                     <div className="flex-1 overflow-y-auto pr-2 max-h-[calc(100vh-20rem)]">
                                         <div className="space-y-4">
-                                            {tasks.map((task) => (
+                                            {taskLogs.map((task: TaskLog) => (
                                                 <div key={task.id} className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all duration-200">
                                                     <div className="flex items-start justify-between">
                                                         <div className="flex-1">
@@ -197,7 +211,6 @@ export default function TaskLogger() {
                                                             <p className="text-gray-300 mt-1">{task.description}</p>
                                                             
                                                             <div className="flex items-center space-x-4 mt-3">
-                                                                {/* Status Dropdown */}
                                                                 <div className="relative">
                                                                     <label className="block text-xs font-medium text-gray-400 mb-1">Status</label>
                                                                     <select 
@@ -211,32 +224,31 @@ export default function TaskLogger() {
                                                                     </select>
                                                                 </div>
 
-                                                                {/* Priority Badge */}
                                                                 <div>
                                                                     <label className="block text-xs font-medium text-gray-400 mb-1">Priority</label>
                                                                     <span className={`px-3 py-1 text-sm font-medium rounded-lg ${getPriorityColor(task.priority)}`}>
                                                                         {task.priority}
                                                                     </span>
                                                                 </div>
+
+                                                                <div>
+                                                                    <label className="block text-xs font-medium text-gray-400 mb-1">Reviewed</label>
+                                                                    <span className={`px-3 py-1 text-sm font-medium rounded-lg ${
+                                                                        task.reviewed 
+                                                                            ? 'bg-green-400/20 text-green-400 border border-green-400/30'
+                                                                            : 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/30'
+                                                                    }`}>
+                                                                        {task.reviewed ? 'Reviewed' : 'Pending'}
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        
-                                                        <div className="flex items-center space-x-2 ml-4">
-                                                            <button className="text-green-400 hover:text-green-300 p-2 rounded-lg hover:bg-green-400/10 transition-colors duration-200 border border-green-400/30 hover:border-green-400/50">
-                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                                </svg>
-                                                            </button>
-                                                            <button className="text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-red-400/10 transition-colors duration-200 border border-red-400/30 hover:border-red-400/50">
-                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                                                </svg>
-                                                            </button>
                                                         </div>
                                                     </div>
                                                     
                                                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
-                                                        <span className="text-xs text-gray-400">Created {task.createdAt}</span>
+                                                        <span className="text-xs text-gray-400">
+                                                            Created {new Date(task.created_at).toLocaleDateString()}
+                                                        </span>
                                                         <div className="flex items-center space-x-2">
                                                             <span className="text-xs text-gray-400">ID: #{task.id}</span>
                                                         </div>
@@ -246,6 +258,12 @@ export default function TaskLogger() {
                                         </div>
                                     </div>
 
+                                    {taskLogs.length === 0 && (
+                                        <div className="text-center py-8 text-gray-400">
+                                            No task logs found. Create your first task!
+                                        </div>
+                                    )}
+
                                     {/* Task Statistics */}
                                     <div className="mt-6 pt-6 border-t border-white/10">
                                         <h3 className="text-lg font-semibold text-white mb-3">Task Statistics</h3>
@@ -253,7 +271,7 @@ export default function TaskLogger() {
                                             {statusOptions.map(status => (
                                                 <div key={status} className="text-center">
                                                     <div className={`text-2xl font-bold rounded-xl p-3 ${getStatusColor(status)}`}>
-                                                        {tasks.filter(task => task.status === status).length}
+                                                        {taskLogs.filter((task: TaskLog) => task.status === status).length}
                                                     </div>
                                                     <p className="text-xs text-gray-300 mt-1">{status}</p>
                                                 </div>
@@ -265,11 +283,6 @@ export default function TaskLogger() {
                         </div>
                     </div>
                 </div>
-
-                {/* Floating Elements */}
-                <div className="absolute top-1/4 left-10 w-4 h-4 bg-blue-400 rounded-full opacity-20 animate-pulse"></div>
-                <div className="absolute top-1/3 right-20 w-6 h-6 bg-purple-400 rounded-full opacity-30 animate-bounce"></div>
-                <div className="absolute bottom-1/4 left-1/4 w-3 h-3 bg-cyan-400 rounded-full opacity-40 animate-pulse"></div>
             </div>
         </>
     );

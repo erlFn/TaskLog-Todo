@@ -6,11 +6,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Inertia\Inertia;  // ← ADD THIS
+use Inertia\Inertia;
 
 class RegisterController extends Controller
 {
-
     public function showRegisterForm()
     {
         return Inertia::render('Register');
@@ -28,6 +27,7 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role_id' => 2, 
         ]);
 
         Auth::login($user);
