@@ -24,7 +24,6 @@ class TaskLogController extends Controller
     }
 
     // Admin view - all tasks with filters
-
     public function adminIndex(Request $request)
     {
         if (!Auth::user()->isAdmin()) {
@@ -118,6 +117,7 @@ class TaskLogController extends Controller
         return redirect()->back()->with('success', 'Task deleted successfully.');
     }
 
+    // FIXED: Either remove this method or create the component
     public function show(TaskLog $taskLog)
     {
         $taskLog->load('user');
@@ -127,9 +127,16 @@ class TaskLogController extends Controller
             abort(403);
         }
 
+        // Option 1: Remove this method entirely if you don't need a detail page
+        // Option 2: Redirect to the main task logger
+        return redirect()->route('tasklogger');
+        
+        // Option 3: If you want a detail page, create TaskLogDetail.tsx (see below)
+        /*
         return Inertia::render('TaskLogDetail', [
             'taskLog' => $taskLog,
             'isAdmin' => Auth::user()->isAdmin(),
         ]);
+        */
     }
 }

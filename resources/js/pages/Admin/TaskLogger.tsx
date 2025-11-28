@@ -25,7 +25,6 @@ interface PageProps {
     taskLogs: TaskLog[];
     employees: Employee[];
     filters: { employee_id?: string; date?: string };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
 }
 
@@ -63,11 +62,9 @@ export default function AdminTaskLogger() {
 
     const handleMarkAsReviewed = () => {
         if (selectedTask) {
-            // Use router.post instead of creating a new form
             router.post(`/tasklogger/${selectedTask.id}/review`, {}, {
                 onSuccess: () => {
                     setShowDialog(false);
-                    // Instead of reloading the entire page, we'll let Inertia handle the update
                     router.reload({ only: ['taskLogs'] });
                 }
             });
@@ -75,7 +72,6 @@ export default function AdminTaskLogger() {
     };
 
     const handleDownloadPDF = () => {
-        // Create a PDF download functionality
         window.open('/admin/tasklogger/pdf?employee_id=' + data.employee_id + '&date=' + data.date, '_blank');
     };
 
@@ -120,7 +116,7 @@ export default function AdminTaskLogger() {
                         <nav className="p-4 flex-1">
                             <ul className="space-y-2">
                                 <li>
-                                    <Link href="/dashboard" className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-200">
+                                    <Link href="/admin/dashboard" className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-200">
                                         <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                                         </svg>

@@ -60,6 +60,7 @@ class TodoController extends Controller
         return redirect()->back()->with('success', 'Todo list created successfully.');
     }
 
+    // FIXED: Added missing storeItem method
     public function storeItem(Request $request, TodoParent $todoParent)
     {
         // Users can only add to their own todo parents
@@ -70,12 +71,14 @@ class TodoController extends Controller
         $request->validate([
             'text' => 'required|string|max:255',
             'category' => 'required|string|max:255',
+            'important' => 'boolean',
         ]);
 
         $todoParent->items()->create([
             'text' => $request->text,
             'category' => $request->category,
             'important' => $request->important ?? false,
+            'completed' => false,
         ]);
 
         return redirect()->back()->with('success', 'Todo item added successfully.');

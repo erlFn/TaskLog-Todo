@@ -1,9 +1,20 @@
 import { Head } from '@inertiajs/react';
+import { PropsWithChildren } from 'react';
 
-export default function Welcome() {
+interface LayoutProps extends PropsWithChildren {
+    title: string;
+    auth?: {
+        user: {
+            name: string;
+            email: string;
+        };
+    };
+}
+
+export default function Layout({ title, auth, children }: LayoutProps) {
     return (
         <>
-            <Head title="Welcome">
+            <Head title={title}>
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
             </Head>
@@ -22,18 +33,31 @@ export default function Welcome() {
                         
                         {/* Auth Buttons */}
                         <div className="flex space-x-4">
-                            <a
-                                href="/login"
-                                className="px-6 py-2 text-white border border-white/20 rounded-lg hover:bg-white/10 transition-all duration-300"
-                            >
-                                Log In
-                            </a>
-                            <a
-                                href="/register"
-                                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-lg"
-                            >
-                                Sign Up
-                            </a>
+                            {auth?.user ? (
+                                // Authenticated - Show Dashboard
+                                <a
+                                    href="/dashboard"
+                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-lg"
+                                >
+                                    Dashboard
+                                </a>
+                            ) : (
+                                // Not authenticated - Show Login/Register
+                                <>
+                                    <a
+                                        href="/login"
+                                        className="px-6 py-2 text-white border border-white/20 rounded-lg hover:bg-white/10 transition-all duration-300"
+                                    >
+                                        Log In
+                                    </a>
+                                    <a
+                                        href="/register"
+                                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-lg"
+                                    >
+                                        Register
+                                    </a>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

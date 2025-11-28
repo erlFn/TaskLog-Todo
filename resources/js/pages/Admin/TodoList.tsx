@@ -1,5 +1,4 @@
-// [file name]: TodoList.tsx (Admin version)
-import { Head, Link, usePage, router } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface TodoItem {
@@ -11,29 +10,79 @@ interface TodoItem {
     created_at: string;
 }
 
+interface User {
+    id: number;
+    name: string;
+}
+
 interface TodoParent {
     id: number;
     title: string;
     description: string;
     created_at: string;
-    user: {
-        id: number;
-        name: string;
-    };
+    user: User;
     items: TodoItem[];
 }
 
-interface PageProps {
+interface AdminTodoListProps {
     todoParents: TodoParent[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any;
+    auth?: {
+        user: {
+            name: string;
+            email: string;
+        };
+    };
 }
 
-export default function AdminTodoList() {
-    const { props } = usePage<PageProps>();
-    const { todoParents } = props;
+export default function AdminTodoList({ todoParents, auth }: AdminTodoListProps) {
     const [selectedItem, setSelectedItem] = useState<TodoItem | null>(null);
     const [showDialog, setShowDialog] = useState(false);
+
+    const { data, setData, get } = useForm({
+        employee_name: '',
+        date: '',
+    });
+
+    const handleFilter = () => {
+        get('/admin/todolist', {
+            preserveState: true,
+        });
+    };
+
+    const handleClearFilters = () => {
+        setData({
+            employee_name: '',
+            date: '',
+        });
+        get('/admin/todolist', {
+            preserveState: true,
+        });
+    };
+
+    // Get unique employee names for the filter dropdown
+    const employeeNames = [...new Set(todoParents.map(parent => parent.user.name))];
+
+    // Filter todo parents based on filters
+    const filteredTodoParents = todoParents.filter(parent => {
+        if (data.employee_name && parent.user.name !== data.employee_name) {
+            return false;
+        }
+        if (data.date && !parent.created_at.startsWith(data.date)) {
+            return false;
+        }
+        return true;
+    });
+
+    // Flatten all todo items for table view (using filtered data)
+    const allTodoItems = filteredTodoParents.flatMap(parent => 
+        parent.items.map(item => ({
+            ...item,
+            parentTitle: parent.title,
+            parentDescription: parent.description,
+            userName: parent.user.name,
+            parentCreatedAt: parent.created_at
+        }))
+    );
 
     const handleLogout = (e: React.FormEvent) => {
         e.preventDefault();
@@ -48,6 +97,18 @@ export default function AdminTodoList() {
             'Health': 'bg-red-400/20 text-red-400 border border-red-400/30'
         };
         return colors[category] || colors['Personal'];
+    };
+
+    const getStatusColor = (completed: boolean) => {
+        return completed 
+            ? 'bg-green-400/20 text-green-400 border border-green-400/30'
+            : 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/30';
+    };
+
+    const getPriorityColor = (important: boolean) => {
+        return important 
+            ? 'bg-red-400/20 text-red-400 border border-red-400/30'
+            : 'bg-gray-400/20 text-gray-300 border border-gray-400/30';
     };
 
     const handleDeleteParent = (parentId: number) => {
@@ -100,7 +161,7 @@ export default function AdminTodoList() {
                         <nav className="p-4 flex-1">
                             <ul className="space-y-2">
                                 <li>
-                                    <Link href="/dashboard" className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-200">
+                                    <Link href="/admin/dashboard" className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-200">
                                         <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                                         </svg>
@@ -144,109 +205,126 @@ export default function AdminTodoList() {
                             <p className="text-gray-300 mt-2">View and manage all employee todo lists</p>
                         </div>
 
-                        {/* Todo Lists */}
-                        <div className="space-y-6">
-                            {todoParents.map((parent: TodoParent) => (
-                                <div key={parent.id} className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                                    {/* Parent Header */}
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div>
-                                            <h3 className="text-xl font-semibold text-white">{parent.title}</h3>
-                                            <p className="text-gray-300 mt-1">{parent.description}</p>
-                                            <div className="flex items-center space-x-4 mt-2 text-sm text-gray-400">
-                                                <span>By: {parent.user.name}</span>
-                                                <span>Created: {new Date(parent.created_at).toLocaleDateString()}</span>
-                                                <span>{parent.items.length} items</span>
-                                            </div>
-                                        </div>
-                                        <button
-                                            onClick={() => handleDeleteParent(parent.id)}
-                                            className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-400/30 hover:border-red-400/50 rounded-lg transition-all duration-200"
-                                        >
-                                            Delete List
-                                        </button>
-                                    </div>
+                        {/* Filters - Replaced Statistics */}
+                        <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 mb-6">
+                            <h2 className="text-xl font-semibold text-white mb-4">Filters</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">Employee</label>
+                                    <select
+                                        value={data.employee_name}
+                                        onChange={e => setData('employee_name', e.target.value)}
+                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    >
+                                        <option value="">All Employees</option>
+                                        {employeeNames.map((name) => (
+                                            <option key={name} value={name}>
+                                                {name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">Date</label>
+                                    <input
+                                        type="date"
+                                        value={data.date}
+                                        onChange={e => setData('date', e.target.value)}
+                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                </div>
+                                <div className="flex items-end space-x-2">
+                                    <button
+                                        onClick={handleFilter}
+                                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200"
+                                    >
+                                        Apply Filters
+                                    </button>
+                                    <button
+                                        onClick={handleClearFilters}
+                                        className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200"
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-                                    {/* Todo Items */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {parent.items.map((item: TodoItem) => (
-                                            <div 
-                                                key={item.id} 
-                                                onClick={() => handleItemClick(item)}
-                                                className={`flex items-center justify-between p-4 border rounded-lg transition-all duration-200 cursor-pointer ${
-                                                    item.completed 
-                                                        ? 'border-green-400/30 bg-green-400/10' 
-                                                        : 'border-white/10 hover:bg-white/5 hover:border-white/20'
-                                                }`}
+
+                        {/* Todo Lists Summary - Updated to Table View */}
+                        <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                            <div className="flex items-center justify-between mb-6">
+                                <h2 className="text-xl font-semibold text-white">All Todo Items</h2>
+                                <div className="text-sm text-gray-300">
+                                    {filteredTodoParents.length} lists
+                                </div>
+                            </div>
+
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b border-white/10">
+                                            <th className="text-left py-3 px-4 text-gray-300 font-semibold">Name</th>
+                                            <th className="text-left py-3 px-4 text-gray-300 font-semibold">Title</th>
+                                            <th className="text-left py-3 px-4 text-gray-300 font-semibold">Description</th>
+                                            <th className="text-left py-3 px-4 text-gray-300 font-semibold">Created</th>
+                                            <th className="text-left py-3 px-4 text-gray-300 font-semibold">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredTodoParents.map((parent) => (
+                                            <tr 
+                                                key={parent.id} 
+                                                className="border-b border-white/5 hover:bg-white/5 transition-colors duration-200"
                                             >
-                                                <div className="flex items-center flex-1">
-                                                    {/* Checkbox */}
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={item.completed}
-                                                        onChange={(e) => {
-                                                            e.stopPropagation();
-                                                            handleToggleComplete(item.id, item.completed);
-                                                        }}
-                                                        className="w-5 h-5 text-green-400 bg-white/5 border-white/10 rounded focus:ring-green-500 focus:ring-offset-gray-900 focus:ring-2" 
-                                                    />
-                                                    
-                                                    {/* Todo Text */}
-                                                    <div className="ml-3 flex-1">
-                                                        <div className="flex items-center space-x-3">
-                                                            <span className={`${item.completed ? 'line-through text-gray-500' : 'text-white'} ${item.important ? 'font-semibold' : ''}`}>
-                                                                {item.text}
-                                                            </span>
-                                                            {item.important && (
-                                                                <span className="px-2 py-1 bg-yellow-400/20 text-yellow-400 border border-yellow-400/30 text-xs rounded-full">
-                                                                    Important
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex items-center space-x-2 mt-1">
-                                                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${getCategoryColor(item.category)}`}>
-                                                                {item.category}
-                                                            </span>
-                                                            <span className="text-xs text-gray-400">
-                                                                {new Date(item.created_at).toLocaleDateString()}
-                                                            </span>
-                                                        </div>
+                                                {/* Name */}
+                                                <td className="py-3 px-4">
+                                                    <span className="text-white font-medium">{parent.user.name}</span>
+                                                </td>
+
+                                                {/* Title */}
+                                                <td className="py-3 px-4">
+                                                    <div className="text-white font-medium">{parent.title}</div>
+                                                </td>
+
+                                                {/* Description */}
+                                                <td className="py-3 px-4">
+                                                    <div className="text-gray-300 max-w-[300px] truncate">
+                                                        {parent.description || 'No description'}
                                                     </div>
-                                                </div>
-                                                
-                                                <div className="flex items-center space-x-2 ml-4">
-                                                    {/* Delete Button */}
+                                                </td>
+
+                                                {/* Created Date */}
+                                                <td className="py-3 px-4">
+                                                    <div className="text-gray-300 text-sm">
+                                                        {new Date(parent.created_at).toLocaleDateString()}
+                                                    </div>
+                                                </td>
+
+                                                {/* Actions */}
+                                                <td className="py-3 px-4">
                                                     <button 
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleDeleteItem(item.id);
-                                                        }}
+                                                        onClick={() => handleDeleteParent(parent.id)}
                                                         className="p-2 text-red-400 hover:text-red-300 rounded-lg hover:bg-red-400/10 border border-transparent hover:border-red-400/30 transition-all duration-200"
-                                                        title="Delete todo"
+                                                        title="Delete list"
                                                     >
                                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                         </svg>
                                                     </button>
-                                                </div>
-                                            </div>
+                                                </td>
+                                            </tr>
                                         ))}
-                                    </div>
-
-                                    {parent.items.length === 0 && (
-                                        <div className="text-center py-4 text-gray-400">
-                                            No todo items in this list.
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-
-                        {todoParents.length === 0 && (
-                            <div className="text-center py-8 text-gray-400">
-                                No todo lists found.
+                                    </tbody>
+                                </table>
                             </div>
-                        )}
+
+                            {filteredTodoParents.length === 0 && (
+                                <div className="text-center py-8 text-gray-400">
+                                    No todo lists found matching your filters.
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 

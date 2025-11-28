@@ -9,7 +9,6 @@ use Inertia\Inertia;
 
 class LoginController extends Controller
 {
-
     public function showLoginForm()
     {
         return Inertia::render('Login');
@@ -22,9 +21,12 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            $request->session()->regenerate();
+        // FIXED: Use the correct authentication logic
+        $credentials = $request->only('email', 'password');
+        $remember = $request->boolean('remember');
 
+        if (Auth::attempt($credentials, $remember)) {
+            $request->session()->regenerate();
             return redirect()->route('dashboard');
         }
 
