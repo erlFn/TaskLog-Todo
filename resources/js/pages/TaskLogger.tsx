@@ -268,7 +268,10 @@ export default function TaskLogger({ taskLogs, isAdmin, auth }: TaskLoggerProps)
                                 <div className="flex-1 overflow-y-auto pr-2 max-h-[calc(100vh-20rem)]">
                                     <div className="space-y-4">
                                         {taskLogs.map((task: TaskLog) => (
-                                            <div key={task.id} className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all duration-200">
+                                            <Link
+                                                href={`/tasklogger/${task.id}`}
+                                                className="block bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all duration-200"
+                                            >
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex-1">
                                                         <h3 className="font-semibold text-white text-lg">{task.title}</h3>
@@ -317,7 +320,7 @@ export default function TaskLogger({ taskLogs, isAdmin, auth }: TaskLoggerProps)
                                                         <span className="text-xs text-gray-400">ID: #{task.id}</span>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         ))}
                                     </div>
                                 </div>

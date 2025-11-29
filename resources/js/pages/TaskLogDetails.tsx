@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 
 interface TaskLog {
     id: number;
@@ -23,9 +23,18 @@ interface TaskLogDetailProps {
 }
 
 export default function TaskLogDetail({ taskLog, isAdmin }: TaskLogDetailProps) {
+    const { props } = usePage();
+    const errors = props.errors as { [key: string]: string };
+
     const handleLogout = (e: React.FormEvent) => {
         e.preventDefault();
         router.post('/logout');
+    };
+
+    const handleMarkAsReviewed = () => {
+        if (confirm('Are you sure you want to mark this task as reviewed?')) {
+            router.post(`/tasklogger/${taskLog.id}/review`);
+        }
     };
 
     const getStatusColor = (status: string) => {
@@ -48,6 +57,20 @@ export default function TaskLogDetail({ taskLog, isAdmin }: TaskLogDetailProps) 
         return colors[priority] || colors['Low'];
     };
 
+    // Show error if taskLog is not available
+    if (!taskLog) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white">
+                <div className="flex-1 ml-64 p-8">
+                    <div className="max-w-4xl mx-auto text-center py-16">
+                        <h2 className="text-2xl font-bold text-white mb-4">Task Not Found</h2>
+                        <p className="text-gray-300 mb-6">The requested task could not be found.</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <>
             <Head title={`Task: ${taskLog.title}`} />
@@ -59,7 +82,7 @@ export default function TaskLogDetail({ taskLog, isAdmin }: TaskLogDetailProps) 
                     {/* Sidebar */}
                     <div className="w-64 bg-white/5 backdrop-blur-sm border-r border-white/10 shadow-lg flex flex-col fixed left-0 top-0 h-screen">
                         <div className="p-6 border-b border-white/10">
-                            <h1 className="text-2xl font-bold text-white">PROJECT TASK</h1>
+                            <h1 className="text-2xl font-bold text-white">CHOROS TASK</h1>
                         </div>
                         <nav className="p-4 flex-1">
                             <ul className="space-y-2">
@@ -97,23 +120,26 @@ export default function TaskLogDetail({ taskLog, isAdmin }: TaskLogDetailProps) 
                                     </svg>
                                     Logout
                                 </button>
-                            </form>
+                            </form>     
                         </div>
                     </div>
 
                     {/* Main Content */}
                     <div className="flex-1 ml-64 p-8">
                         <div className="max-w-4xl mx-auto">
+                            {/* Error Messages */}
+                            {errors && Object.keys(errors).length > 0 && (
+                                <div className="mb-6 p-4 bg-red-400/20 border border-red-400/30 rounded-lg">
+                                    <h3 className="text-red-400 font-semibold mb-2">Error</h3>
+                                    <ul className="text-red-300 text-sm">
+                                        {Object.entries(errors).map(([key, error]) => (
+                                            <li key={key}>• {error}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
                             <div className="mb-6">
-                                <Link 
-                                    href="/tasklogger" 
-                                    className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-200 mb-4"
-                                >
-                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                    </svg>
-                                    Back to Task Logger
-                                </Link>
                                 <h1 className="text-3xl font-bold text-white">Task Details</h1>
                                 <p className="text-gray-300 mt-2">Detailed view of your task</p>
                             </div>
@@ -124,18 +150,23 @@ export default function TaskLogDetail({ taskLog, isAdmin }: TaskLogDetailProps) 
                                     <div>
                                         <h2 className="text-2xl font-bold text-white mb-2">{taskLog.title}</h2>
                                         <div className="flex items-center space-x-4">
+                                           <p className="text-gray-300 mt-2">Status: </p>
                                             <span className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(taskLog.status)}`}>
                                                 {taskLog.status}
                                             </span>
+
+                                            <p className="text-gray-300 mt-2">Priority: </p>
                                             <span className={`px-3 py-1 text-sm font-medium rounded-full ${getPriorityColor(taskLog.priority)}`}>
                                                 {taskLog.priority} Priority
                                             </span>
+
+                                              <p className="text-gray-300 mt-2">Review: </p>
                                             <span className={`px-3 py-1 text-sm font-medium rounded-full ${
                                                 taskLog.reviewed 
                                                     ? 'bg-green-400/20 text-green-400 border border-green-400/30'
                                                     : 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/30'
                                             }`}>
-                                                {taskLog.reviewed ? 'Reviewed' : 'Pending Review'}
+                                                {taskLog.reviewed ? 'Reviewed' : 'Pending'}
                                             </span>
                                         </div>
                                     </div>
@@ -199,11 +230,19 @@ export default function TaskLogDetail({ taskLog, isAdmin }: TaskLogDetailProps) 
                                     </Link>
                                     {isAdmin && !taskLog.reviewed && (
                                         <button
-                                            onClick={() => router.post(`/tasklogger/${taskLog.id}/review`)}
+                                            onClick={handleMarkAsReviewed}
                                             className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200"
                                         >
                                             Mark as Reviewed
                                         </button>
+                                    )}
+                                    {isAdmin && (
+                                        <Link
+                                            href={`/tasklogger/${taskLog.id}/edit`}
+                                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200"
+                                        >
+                                            Edit Task
+                                        </Link>
                                     )}
                                 </div>
                             </div>

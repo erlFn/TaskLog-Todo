@@ -127,16 +127,10 @@ class TaskLogController extends Controller
             abort(403);
         }
 
-        // Option 1: Remove this method entirely if you don't need a detail page
-        // Option 2: Redirect to the main task logger
-        return redirect()->route('tasklogger');
-        
-        // Option 3: If you want a detail page, create TaskLogDetail.tsx (see below)
-        /*
-        return Inertia::render('TaskLogDetail', [
+        return Inertia::render('TaskLogDetails', [
             'taskLog' => $taskLog,
             'isAdmin' => Auth::user()->isAdmin(),
         ]);
-        */
+        
     }
 }
