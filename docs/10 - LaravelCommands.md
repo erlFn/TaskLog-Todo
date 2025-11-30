@@ -18,3 +18,9 @@
 
 ### Optimize
 - `php artisan optimize:clear`
+
+### Migrate 
+- `php artisan migrate`
+
+### Migrate Fresh
+- `php artisan migrate:fresh`
