@@ -7,7 +7,12 @@
 ## Pulling changes from main branch
 1. git checkout branch-name.
 2. git fetch origin main.
-2. git merge origin branch-name.
+2. git merge origin branch-name
+
+## Push changes to own brach
+1. git add .
+2. git commit -m "message of your own"
+3. git push
 
 ## Pushing changes to main branch
 1. Always check if there are changes in the main branch before pushing.
