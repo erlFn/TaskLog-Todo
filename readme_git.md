@@ -1,19 +1,36 @@
 #GitHub
 
 ## Creating a branch
-1. git checkout -b branch-name.
-2. git push -u origin branch-name. // Always do this after creating a new branch
+1. git checkout -b branch-name
+2. git push -u origin branch-name // Always do this after creating a new branch
 
-## Pulling changes from main branch
-1. git checkout branch-name.
-2. git fetch origin main.
-2. git merge origin branch-name.
+## Pushing to changes to own branch
+1. git add .
+2. git commit -m "your own message"
+3. git push
 
-## Pushing changes to main branch
+## Pulling changes from remote main branch to local main branch
+1. git checkout main
+2. git status
+3. git pull
+
+## Pushing updated remote main branch to your local branch
+1. git checkout main
+2. git pull
+3. git checkout <branch-name>
+4. git pull origin main
+5. git push
+
+## Deleting a branch
+1. git checkout main
+2. git branch -D <branch-name>
+3. git push origin --delete <branch-name>
+
+<!-- ## Pushing changes to main branch
 1. Always check if there are changes in the main branch before pushing.
 1.1 If there are changes. Pull the changes first from the main branch.
 
 2. If there are no changes. Push the changes to your branch and create a PR(Pull Request) from your `branchName-to-main`
 2.1 If there are conflict in your PR, fix it. If you don't know how to fix it, ask for help sakon.
 
-3. Merge the PR.
+3. Merge the PR. -->
