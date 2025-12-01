@@ -22,6 +22,7 @@ export default function Login() {
                     label="* Email"
                 >
                     <Input
+                        name="email"
                         type="email"
                         placeholder="example@email.com"
                         required
@@ -33,6 +34,7 @@ export default function Login() {
                 >
                     <div className="relative">
                         <Input
+                            name="password"
                             type={showPassword ? 'text' : 'password'}
                             placeholder="Password"
                             className="text-sm"
