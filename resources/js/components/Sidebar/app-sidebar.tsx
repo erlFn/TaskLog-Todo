@@ -3,6 +3,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "../ui/sid
 import { SideHeader } from "./header";
 import { NavMain } from "./nav-main";
 import { SideFooter } from "./footer";
+import { FooterNav } from "./footer-nav";
 
 export function AppSidebar({ ...props } : React.ComponentProps<typeof Sidebar>) {    
     return (
@@ -16,6 +17,7 @@ export function AppSidebar({ ...props } : React.ComponentProps<typeof Sidebar>) 
             </SidebarContent>
 
             <SidebarFooter>
+                <FooterNav/>
                 <SideFooter/>
             </SidebarFooter>
         </Sidebar>
