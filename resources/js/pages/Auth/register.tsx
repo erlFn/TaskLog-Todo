@@ -6,7 +6,7 @@ export default function Register() {
             type="register"
         >
             <p>
-                Register
+                Register    
             </p>
         </AuthLayout>
     );
