@@ -11,7 +11,7 @@ const navItems: NavItem[] = [
     },
     {
         title: 'Register',
-        href: welcome.url(),
+        href: '/register',
     },
 ]
 
