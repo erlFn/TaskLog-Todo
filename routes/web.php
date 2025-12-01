@@ -5,7 +5,7 @@ use Inertia\Inertia;
 
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    return Inertia::render('Admin/dashboard');
 })->name('welcome');
 
 

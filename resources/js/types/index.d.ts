@@ -28,3 +28,8 @@ export interface NavItem {
     href: NonNullable<InertiaLinkProps['href']>;
     icon?: LucideIcon | null;
 }
+
+export interface BreadcrumbItem {
+    title: string;
+    href: NonNullable<InertiaLinkProps['href']>;
+}
