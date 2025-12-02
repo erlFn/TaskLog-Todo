@@ -6,6 +6,7 @@ use App\RoleType;
 use Illuminate\Http\Request;
 use App\Services\RegisterService;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -33,6 +34,9 @@ class RegisterController extends Controller
 
             $preparedData = $this->registerService->preparedData($validated);
             $user = $this->registerService->createNewUser($preparedData);
+
+            Auth::login($user);
+            $request->session()->regenerate();
 
             return $this->redirectBasedOnRole($user->role);
         } catch (ValidationException $e) {
