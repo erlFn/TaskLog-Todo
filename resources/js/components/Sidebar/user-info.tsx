@@ -1,12 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { UserRound } from 'lucide-react';
 import { useSidebar } from "../ui/sidebar";
+import { User } from "@/types";
 
 interface ContentProps {
     showEmail?: boolean;
+    user: User;
 }
 
-export function UserInfo({ showEmail = false } : ContentProps) {
+export function UserInfo({ showEmail = false, user } : ContentProps) {
     const { state } = useSidebar();
 
     return (
@@ -30,11 +32,11 @@ export function UserInfo({ showEmail = false } : ContentProps) {
             </Avatar>
             <div className="flex flex-col truncate">
                 <p className="truncate">
-                    Earl Villarias
+                    {user.name}
                 </p>
                 {showEmail && (
                     <p className="truncate text-xs text-muted-foreground">
-                        exampleemail@gmail.com
+                        {user.email}
                     </p>
                 )}
             </div>

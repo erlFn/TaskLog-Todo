@@ -4,8 +4,13 @@ import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "../u
 import { UserInfo } from "./user-info";
 import { DoorOpen } from 'lucide-react';
 import auth from "@/routes/auth";
+import { User } from "@/types";
 
-export function UserMenu() {
+interface ContentProps {
+    user: User;
+}
+
+export function UserMenu({ user } : ContentProps) {
 
     const handleLogout = () => {
         router.post(auth.logout());
@@ -16,6 +21,7 @@ export function UserMenu() {
             <DropdownMenuLabel>
                 <UserInfo
                     showEmail={true}
+                    user={user}
                 />
             </DropdownMenuLabel>
             <DropdownMenuSeparator/>
