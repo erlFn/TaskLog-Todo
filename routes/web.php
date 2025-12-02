@@ -5,8 +5,8 @@ use Inertia\Inertia;
 
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    return Inertia::render('Admin/task/index');
 })->name('welcome');
 
 
-require __DIR__.'/register.php';
+require __DIR__ . '/register.php';
