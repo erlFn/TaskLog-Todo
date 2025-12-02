@@ -7,6 +7,7 @@ import { Form } from "@inertiajs/react";
 import { useState } from "react";
 import { Send, Eye } from 'lucide-react';
 import { Toggle } from "@/components/ui/toggle";
+import { toast } from 'sonner';
 
 export default function Register() {
     const [ name, setName ] = useState('');
@@ -18,8 +19,18 @@ export default function Register() {
             type="register"
         >
             <Form
+                action="/register"
                 method="post"
                 className="w-full space-y-4"
+                onError={(error) => {
+                    if (typeof error === 'string') {
+                        toast.error(error);
+                    } else if (typeof error === 'object' && error !== null) {
+                        Object.values(error).forEach(msg => {
+                            toast.error(msg as string);
+                        });
+                    }
+                }}
             >
                 <FormField
                     label="* Name"

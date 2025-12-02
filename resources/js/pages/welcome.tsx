@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { welcome } from "@/routes";
-import { NavItem } from "@/types";
-import { InertiaLinkProps, router } from "@inertiajs/react";
+import { NavItem, SharedData } from "@/types";
+import { InertiaLinkProps, router, usePage } from "@inertiajs/react";
+import { useEffect } from "react";
+import { toast } from 'sonner';
 
 const navItems: NavItem[] = [
     {
@@ -16,10 +18,19 @@ const navItems: NavItem[] = [
 ]
 
 export default function Welcome() {
+    const { flash } = usePage<SharedData>().props;
 
     const handleRedirect = (url: NonNullable<InertiaLinkProps['href']>) => {
         router.get(url);
     };
+
+    useEffect(() => {
+        if (flash?.error) {
+            toast.error(flash.error);
+        } else if (flash?.success) {
+            toast.success(flash.success);
+        }
+    }, [flash]);
 
     return (
         <div className="w-full min-h-screen flex flex-col gap-4 items-center justify-center transition-all duration-750 opacity-100 starting:opacity-0">
