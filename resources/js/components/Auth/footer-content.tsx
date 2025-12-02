@@ -1,3 +1,4 @@
+import auth from "@/routes/auth";
 import { Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
@@ -15,11 +16,11 @@ export function FooterContent({ type } : ContentProps) {
         if (type === 'login') {
             setDescription("Don't have an account yet?");
             setTitle("Create an account");
-            setLink("#");
+            setLink(auth.register.url());
         } else {
             setDescription("Already have an account?");
             setTitle("Sign In");
-            setLink("#");
+            setLink(auth.login.url());
         }
     }, [type]);
 
