@@ -3,8 +3,14 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
 import { UserInfo } from "./user-info";
 import { Settings2 } from 'lucide-react';
 import { UserMenu } from "./user-menu";
+import { router } from "@inertiajs/react";
+import auth from "@/routes/auth";
 
 export function SideFooter() {
+
+    const handleLogout = () => {
+        router.post(auth.logout());
+    };
 
     return(
         <SidebarMenu>

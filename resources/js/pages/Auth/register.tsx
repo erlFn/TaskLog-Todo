@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Send, Eye } from 'lucide-react';
 import { Toggle } from "@/components/ui/toggle";
 import { toast } from 'sonner';
+import auth from "@/routes/auth";
 
 export default function Register() {
     const [ name, setName ] = useState('');
@@ -19,7 +20,7 @@ export default function Register() {
             type="register"
         >
             <Form
-                action="/register"
+                action={auth.register.store()}
                 method="post"
                 className="w-full space-y-4"
                 onError={(error) => {

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
 import AuthLayout from "@/layouts/auth-layout";
+import auth from "@/routes/auth";
 import { Form } from "@inertiajs/react";
 import { Eye, Send } from 'lucide-react';
 import { useState } from "react";
@@ -15,6 +16,7 @@ export default function Login() {
             type='login'
         >
             <Form
+                action={auth.login.store()}
                 method="post"
                 className="w-full space-y-4"
             >

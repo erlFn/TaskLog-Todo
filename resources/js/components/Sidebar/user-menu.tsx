@@ -1,12 +1,14 @@
+import { router } from "@inertiajs/react";
 import { Button } from "../ui/button";
 import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "../ui/dropdown-menu";
 import { UserInfo } from "./user-info";
 import { DoorOpen } from 'lucide-react';
+import auth from "@/routes/auth";
 
 export function UserMenu() {
 
     const handleLogout = () => {
-        console.log('sign out');
+        router.post(auth.logout());
     };
     
     return (
