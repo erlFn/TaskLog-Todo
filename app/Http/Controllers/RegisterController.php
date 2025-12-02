@@ -42,14 +42,14 @@ class RegisterController extends Controller
                 'error' => $e->getMessage()
             ]);
 
-            return redirect()->route('welcome');
+            return redirect()->route('welcome')->with('error', "There's an error in creating an account");
         }
     }
 
     private function redirectBasedOnRole(RoleType $roleType): RedirectResponse
     {
         if ($roleType === RoleType::ADMIN) {
-            return redirect()->route('welcome')->with('success', 'admin');
+            return redirect()->route('admin.dashboard');
         }
 
         return redirect()->route('welcome')->with('success', 'user');
