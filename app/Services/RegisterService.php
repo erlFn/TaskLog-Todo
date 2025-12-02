@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\User;
 use App\RoleType;
 use Exception;
-use Illuminate\Container\Attributes\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class RegisterService

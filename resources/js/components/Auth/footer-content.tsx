@@ -1,16 +1,16 @@
 import auth from "@/routes/auth";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
 interface ContentProps {
     type: 'login' | 'register';
+    setIsLoading: (value: boolean) => void;
 }
 
-export function FooterContent({ type } : ContentProps) {
+export function FooterContent({ type, setIsLoading } : ContentProps) {
     const [ description, setDescription ] = useState("");
     const [ title, setTitle ]  = useState("");
     const [ link, setLink ] = useState("");
-
 
     useEffect(() => {
         if (type === 'login') {
@@ -24,12 +24,17 @@ export function FooterContent({ type } : ContentProps) {
         }
     }, [type]);
 
+    const handleRedirect = () => {
+        setIsLoading(true);
+    };
+
     return (
         <div className="flex items-center gap-2 text-sm">
             <p className="text-muted-foreground">
                 {description}
             </p>
             <Link
+                onClick={handleRedirect}
                 href={link}
                 className="text-blue-500"
             >

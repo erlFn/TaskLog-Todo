@@ -9,20 +9,28 @@ import { Send, Eye } from 'lucide-react';
 import { Toggle } from "@/components/ui/toggle";
 import { toast } from 'sonner';
 import auth from "@/routes/auth";
+import { Loading } from "@/components/Common/loading";
 
 export default function Register() {
     const [ name, setName ] = useState('');
     const [ showPass1, setShowPass1 ] = useState(false);
     const [ showPass2, setShowPass2 ] = useState(false);
+    const [ isLoading, setIsLoading ] = useState(false);
 
     return (
         <AuthLayout
             type="register"
         >
+            {isLoading && (
+                <Loading/>
+            )}
             <Form
                 action={auth.register.store()}
                 method="post"
                 className="w-full space-y-4"
+                onStart={() => {
+                    setIsLoading(true);
+                }}
                 onError={(error) => {
                     if (typeof error === 'string') {
                         toast.error(error);
@@ -31,6 +39,9 @@ export default function Register() {
                             toast.error(msg as string);
                         });
                     }
+                }}
+                onFinish={() => {
+                    setIsLoading(false);
                 }}
             >
                 <FormField
