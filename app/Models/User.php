@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\RoleType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,7 +23,8 @@ class User extends Authenticatable
         'password',
     ];
 
-    protected $casts = [ 
+    protected $casts = [
         'password' => 'hashed',
+        'role' => RoleType::class,
     ];
 }

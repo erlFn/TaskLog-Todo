@@ -5,8 +5,7 @@ use Inertia\Inertia;
 
 
 Route::get('/', function () {
-    return Inertia::render('Admin/dashboard');
+    return Inertia::render('welcome');
 })->name('welcome');
 
-
-require __DIR__ . '/register.php';
+require __DIR__ . "/auth.php";

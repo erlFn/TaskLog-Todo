@@ -10,7 +10,7 @@ use Inertia\Inertia;
 
 class LoginController extends Controller
 {
-    public function create()
+    public function index()
     {
         return Inertia::render('Auth/login');
     }
@@ -19,23 +19,23 @@ class LoginController extends Controller
     {
         try {
             $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        if(!Auth::attempt($credentials, $request->boolean('remember'))) {
-            return back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
+                'email' => ['required', 'email'],
+                'password' => ['required'],
             ]);
-        }
 
-        $request->session()->regenerate();
+            if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+                return back()->withErrors([
+                    'email' => 'The provided credentials do not match our records.',
+                ]);
+            }
 
-        return redirect()->intended('/dashboard');
+            $request->session()->regenerate();
 
+            return redirect()->intended('/dashboard');
         } catch (\Exception $e) {
             return back()->withErrors([
-                'error' => 'An unexpected error occurred. Please try again later.']);
+                'error' => 'An unexpected error occurred. Please try again later.'
+            ]);
         }
     }
 }
