@@ -28,7 +28,7 @@ export default function AppLayout({ children, breadcrumbs } : ContentProps) {
                         breadcrumbs={breadcrumbs}
                     />
                 </header>
-                <main className="w-full text-center p-4">
+                <main className="w-full p-4">
                     {children}
                 </main>
             </SidebarInset>
