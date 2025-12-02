@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { welcome } from "@/routes";
+import auth from "@/routes/auth";
 import { NavItem, SharedData } from "@/types";
 import { InertiaLinkProps, router, usePage } from "@inertiajs/react";
 import { useEffect } from "react";
@@ -9,11 +10,11 @@ import { toast } from 'sonner';
 const navItems: NavItem[] = [
     {
         title: 'Login',
-        href: welcome.url(),
+        href: auth.login.url(),
     },
     {
         title: 'Register',
-        href: '/register',
+        href: auth.register.url(),
     },
 ]
 
