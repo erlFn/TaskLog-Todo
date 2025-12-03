@@ -43,4 +43,5 @@ export interface BreadcrumbItem {
 export interface TabsData {
     label: string;
     value: string;
+    color?: string;
 }
