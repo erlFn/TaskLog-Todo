@@ -1,5 +1,5 @@
 import { DataMetrics } from "@/components/Admin/dashboard/data-metrics";
-import { Separator } from "@/components/ui/separator";
+import { LabelField } from "@/components/Common/User/label-field";
 import AppLayout from "@/layouts/app-layout";
 import { welcome } from "@/routes";
 import { BreadcrumbItem } from "@/types";
@@ -14,22 +14,17 @@ export default function Dashboard() {
         <AppLayout
             breadcrumbs={breadCrumbs}
         >
-            <div className="w-full flex flex-col gap-2">
-                <span className="flex items-center gap-2 text-muted-foreground text-xs">
-                    <HardDrive
-                        className="size-4"
-                    />
-                    <p>
-                        Data Metrics
-                    </p>
-                </span>
+            <LabelField
+                icon={HardDrive}
+                label="Data Metrics"
+            >
                 <div className="grid grid-cols-2 gap-4">
-                    <DataMetrics/>
+                    <DataMetrics
+                        tasksCount={100}
+                        todoCount={200}
+                    />
                 </div>
-            </div>
-            <Separator
-                className="my-4"
-            />
+            </LabelField>
         </AppLayout>
     );
 }
