@@ -1,12 +1,9 @@
 import AppLayout from "@/layouts/app-layout";
-import { welcome } from "@/routes";
+import admin from "@/routes/admin";
 import { BreadcrumbItem } from "@/types";
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Tasks',
-        href: welcome.url()
-    }
+    { title: 'Tasks', href: admin.tasks.url() }
 ];
 
 export default function Index() {

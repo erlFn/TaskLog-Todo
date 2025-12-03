@@ -5,10 +5,10 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 
-class TaskController extends Controller
+class DashboardController extends Controller
 {
     public function index() 
     {
-        return Inertia::render('User/task/index');
+        return Inertia::render('User/dashboard');
     }
 }

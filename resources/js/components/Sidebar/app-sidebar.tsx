@@ -4,8 +4,13 @@ import { SideHeader } from "./header";
 import { NavMain } from "./nav-main";
 import { SideFooter } from "./footer";
 import { FooterNav } from "./footer-nav";
+import { usePage } from "@inertiajs/react";
+import { SharedData } from "@/types";
+import { AdminNavMain } from "./admin-nav-main";
 
-export function AppSidebar({ ...props } : React.ComponentProps<typeof Sidebar>) {    
+export function AppSidebar({ ...props } : React.ComponentProps<typeof Sidebar>) {
+    const { auth } = usePage<SharedData>().props;
+
     return (
         <Sidebar {...props}>
             <SidebarHeader>
@@ -13,7 +18,11 @@ export function AppSidebar({ ...props } : React.ComponentProps<typeof Sidebar>) 
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain/>
+                {auth.user.role === 'user' ? (
+                    <NavMain/>
+                ) : (
+                    <AdminNavMain/>
+                )}
             </SidebarContent>
 
             <SidebarFooter>

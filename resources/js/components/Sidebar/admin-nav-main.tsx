@@ -1,41 +1,41 @@
+import admin from "@/routes/admin";
 import { NavItem } from "@/types";
-import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
-import { LayoutDashboard, ClipboardList, ListTodo } from 'lucide-react';
 import { Link, usePage } from "@inertiajs/react";
-import user from "@/routes/user";
+import { LayoutDashboard, ClipboardList, ListTodo } from 'lucide-react';
+import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
 
 const navItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: user.dashboard.url(),
+        href: admin.dashboard.url(),
         icon: LayoutDashboard
     },
     {
         title: 'Tasks',
-        href: user.tasks.url(),
+        href: admin.tasks.url(),
         icon: ClipboardList
     },
     {
         title: 'ToDo',
-        href: user.todo.url(),
+        href: admin.todo.url(),
         icon: ListTodo
-    }
-];
+    },
+]
 
-export function NavMain() {
+export function AdminNavMain() {
     const page = usePage();
 
     return (
         <SidebarGroup>
             <SidebarGroupLabel>
-                Navigation
+                Admin Navigation
             </SidebarGroupLabel>
             <SidebarGroupContent>
                 <SidebarMenu className="space-y-1">
-                    {navItems.map((item, idx) => {
+                    {navItems.map(( item, idx) => {
                         const activePage = item.href === page.url || page.url.startsWith(item.href + '/') || page.url.startsWith(item.href + '?');
 
-                        return(
+                        return (
                             <SidebarMenuItem
                                 key={idx}
                             >
@@ -54,7 +54,7 @@ export function NavMain() {
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                         );
-                        })}
+                    })}
                 </SidebarMenu>
             </SidebarGroupContent>
         </SidebarGroup>

@@ -7,10 +7,7 @@ import { HardDrive } from "lucide-react";
 
 export default function Dashboard() {
     const breadCrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Dashboard',
-            href: welcome.url(),
-        },
+        { title: 'Dashboard', href: welcome.url() },
     ];
 
     return (

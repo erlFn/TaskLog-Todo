@@ -1,18 +1,18 @@
 import AppLayout from "@/layouts/app-layout";
-import admin from "@/routes/admin";
+import user from "@/routes/user";
 import { BreadcrumbItem } from "@/types";
 
-const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'ToDo', href: admin.todo.url() }
-];
-
 export default function Index() {
+    const breadcrumbs: BreadcrumbItem[] = [
+        { title: 'ToDo', href: user.tasks.url() }
+    ];
+
     return (
         <AppLayout
             breadcrumbs={breadcrumbs}
         >
             <p>
-                Admin Todo Page
+                User ToDo Page
             </p>
         </AppLayout>
     );

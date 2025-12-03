@@ -2,7 +2,9 @@ import { Loading } from "@/components/Common/loading";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import admin from "@/routes/admin";
 import auth from "@/routes/auth";
+import user from "@/routes/user";
 import { NavItem, SharedData } from "@/types";
 import { InertiaLinkProps, router, usePage } from "@inertiajs/react";
 import { useState } from "react";
@@ -19,7 +21,7 @@ const navItems: NavItem[] = [
 ]
 
 export default function Welcome() {
-    const { flash } = usePage<SharedData>().props;
+    const { flash, auth } = usePage<SharedData>().props;
     const [ isLoading, setIsLoading ] = useState(false);
 
     const handleRedirect = (url: NonNullable<InertiaLinkProps['href']>) => {
@@ -69,16 +71,27 @@ export default function Welcome() {
                     </HoverCardContent>
                 </HoverCard>
                 <div className="flex flex-col items-center gap-2">
-                    {navItems.map(item => (
-                        <Button
-                            type="button"
-                            variant="link"
-                            onClick={() => handleRedirect(item.href)}
-                            className="text-sm bg-blue-500/10 hover:bg-blue-500/30 p-2 px-6 hover:px-12 rounded-full text-blue-500 hover:text-blue-500 underline-offset-4 hover:underline transition-all duration-250 cursor-pointer"
-                        >
-                            {item.title}
-                        </Button>
-                    ))}
+                    {auth.user ? (
+                            <Button
+                                type="button"
+                                variant="link"
+                                onClick={() => handleRedirect(auth.user.role === 'user' ? user.dashboard.url() : admin.dashboard.url())}
+                                className="text-sm bg-blue-500/10 hover:bg-blue-500/30 p-2 px-6 hover:px-12 rounded-full text-blue-500 hover:text-blue-500 underline-offset-4 hover:underline transition-all duration-250 cursor-pointer"
+                            >
+                                Dashboard
+                            </Button>
+                    ) : (
+                        navItems.map(item => (
+                            <Button
+                                type="button"
+                                variant="link"
+                                onClick={() => handleRedirect(item.href)}
+                                className="text-sm bg-blue-500/10 hover:bg-blue-500/30 p-2 px-6 hover:px-12 rounded-full text-blue-500 hover:text-blue-500 underline-offset-4 hover:underline transition-all duration-250 cursor-pointer"
+                            >
+                                {item.title}
+                            </Button>
+                        ))
+                    )}
                 </div>
             </div>
         </>
