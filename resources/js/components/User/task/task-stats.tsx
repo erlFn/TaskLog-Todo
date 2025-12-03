@@ -14,7 +14,24 @@ export function TaskStats() {
             </span>
             <div className="grid grid-cols-5 gap-2">
                 <RenderSkeleton
-                    count={5}
+                    count={1}
+                    status="to_do"
+                />
+                <RenderSkeleton
+                    count={1}
+                    status="in_progress"
+                />
+                <RenderSkeleton
+                    count={1}
+                    status="in_review"
+                />
+                <RenderSkeleton
+                    count={1}
+                    status="done"
+                />
+                <RenderSkeleton
+                    count={1}
+                    status="closed"
                 />
             </div>
         </div>
