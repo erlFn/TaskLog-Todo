@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\RegisterService;
+use App\Services\TaskService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,7 +16,13 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(RegisterService::class, function ($app) {
             return new RegisterService();
         });
+
+        $this->app->singleton(TaskService::class, function ($app) {
+            return new TaskService();
+        });
+    
     }
+    
 
     /**
      * Bootstrap any application services.
