@@ -9,4 +9,4 @@ Route::get('/', function () {
 })->name('welcome');
 
 
-require __DIR__.'/register.php';
+require __DIR__.'/auth.php';
