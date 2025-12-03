@@ -1,12 +1,11 @@
 <?php
-// app/Services/TaskService.php
 
 namespace App\Services;
 
 use App\Models\Task;
 use App\Models\User;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TaskService
 {
@@ -15,35 +14,100 @@ class TaskService
         DB::beginTransaction();
         
         try {
-            $task = $user->tasks()->create($data);
+            $data['created_by'] = $user->id;
+            $task = Task::create($data);
             
             DB::commit();
+            
+            Log::info('TaskService: Task created successfully', [
+                'task_id' => $task->id,
+                'user_id' => $user->id,
+                'title' => $task->title
+            ]);
             
             return $task;
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            Log::error('TaskService: Failed to create task', [
+                'user_id' => $user->id,
+                'data' => $data,
+                'error' => $e->getMessage()
+            ]);
+            
             throw $e;
         }
     }
 
     public function updateTask(Task $task, array $data): Task
     {
-        $task->update($data);
-        return $task->fresh();
+        DB::beginTransaction();
+        
+        try {
+            $oldData = $task->toArray();
+            $task->update($data);
+            $updatedTask = $task->fresh();
+            
+            DB::commit();
+            
+            Log::info('TaskService: Task updated successfully', [
+                'task_id' => $task->id,
+                'changes' => array_diff_assoc($updatedTask->toArray(), $oldData)
+            ]);
+            
+            return $updatedTask;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            Log::error('TaskService: Failed to update task', [
+                'task_id' => $task->id,
+                'data' => $data,
+                'error' => $e->getMessage()
+            ]);
+            
+            throw $e;
+        }
     }
 
     public function deleteTask(Task $task): bool
     {
-        return $task->delete();
+        DB::beginTransaction();
+        
+        try {
+            $taskId = $task->id;
+            $userId = $task->created_by;
+            $taskTitle = $task->title;
+            
+            $result = $task->delete();
+            
+            DB::commit();
+            
+            Log::info('TaskService: Task deleted successfully', [
+                'task_id' => $taskId,
+                'user_id' => $userId,
+                'title' => $taskTitle
+            ]);
+            
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            Log::error('TaskService: Failed to delete task', [
+                'task_id' => $task->id ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            
+            throw $e;
+        }
     }
 
-    public function getUserTasks(User $user, array $filters = []): LengthAwarePaginator
+    public function buildTaskQuery(User $user, array $filters = [])
     {
-        $query = $user->tasks()->withCount(['todos as completed_todos_count' => function($q) {
-            $q->where('is_completed', true);
-        }]);
+        $query = $user->tasks()
+            ->withCount(['todos as completed_todos_count' => function($q) {
+                $q->where('is_completed', true);
+            }]);
         
-        // Apply filters
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
@@ -59,31 +123,16 @@ class TaskService
             });
         }
         
-        // Overdue filter
-        if (isset($filters['overdue']) && $filters['overdue']) {
-            $query->where('due_date', '<', now())
-                  ->where('status', '!=', 'completed');
-        }
-        
-        // Sort
-        $sortBy = $filters['sort_by'] ?? 'created_at';
-        $sortOrder = $filters['sort_order'] ?? 'desc';
-        $query->orderBy($sortBy, $sortOrder);
-        
-        return $query->paginate($filters['per_page'] ?? 15);
+        return $query;
     }
 
-    public function getTaskStats(User $user): array
+    public function getTaskStatusStats(User $user): array
     {
         return [
-            'total' => $user->tasks()->count(),
             'completed' => $user->tasks()->where('status', 'completed')->count(),
             'pending' => $user->tasks()->where('status', 'pending')->count(),
             'in_progress' => $user->tasks()->where('status', 'in_progress')->count(),
-            'overdue' => $user->tasks()
-                ->where('due_date', '<', now())
-                ->where('status', '!=', 'completed')
-                ->count(),
+            'cancelled' => $user->tasks()->where('status', 'cancelled')->count(),
         ];
     }
 }
