@@ -126,4 +126,21 @@
   body {
         @apply bg-background text-foreground;
     }
+
+  /* Thin scrollbar styles */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) var(--color-background);
+  }
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+  }
+  *::-webkit-scrollbar-track {
+    background: var(--color-background);
+  }
 }
