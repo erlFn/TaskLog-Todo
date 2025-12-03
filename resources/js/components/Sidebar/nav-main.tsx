@@ -3,11 +3,12 @@ import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, Side
 import { welcome } from "@/routes";
 import { LayoutDashboard, ClipboardList, ListTodo } from 'lucide-react';
 import { Link, usePage } from "@inertiajs/react";
+import admin from "@/routes/admin";
 
 const navItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: welcome.url(),
+        href: admin.dashboard.url(),
         icon: LayoutDashboard
     },
     {
