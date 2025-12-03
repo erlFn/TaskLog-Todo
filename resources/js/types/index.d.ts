@@ -39,3 +39,8 @@ export interface BreadcrumbItem {
     title: string;
     href: NonNullable<InertiaLinkProps['href']>;
 }
+
+export interface TabsData {
+    label: string;
+    value: string;
+}
