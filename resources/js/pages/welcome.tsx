@@ -1,13 +1,11 @@
 import { Loading } from "@/components/Common/loading";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { Spinner } from "@/components/ui/spinner";
-import { welcome } from "@/routes";
 import auth from "@/routes/auth";
 import { NavItem, SharedData } from "@/types";
 import { InertiaLinkProps, router, usePage } from "@inertiajs/react";
-import { useEffect, useState } from "react";
-import { toast } from 'sonner';
+import { useState } from "react";
 
 const navItems: NavItem[] = [
     {
@@ -29,22 +27,26 @@ export default function Welcome() {
         router.get(url);
     };
 
-    useEffect(() => {
-        if (flash?.error) {
-            toast.error(flash.error);
-        } else if (flash?.success) {
-            toast.success(flash.success);
-        } else if (flash?.info) {
-            toast.info(flash.info);
-        }
-    }, [flash]);
-
     return (
         <>
             {isLoading && (
                 <Loading/>
             )}
             <div className="w-full min-h-screen flex flex-col gap-4 items-center justify-center transition-all duration-750 opacity-100 starting:opacity-0">
+                {flash?.error && (
+                    <div className="w-2xs">
+                        {flash?.error && (
+                            <Alert
+                                variant="destructive"
+                                className="text-red-500 border-red-500 bg-red-500/5"
+                            >
+                                <AlertDescription className="text-center">
+                                    {flash.error}
+                                </AlertDescription>
+                            </Alert>
+                        )}
+                    </div>
+                )}
                 <HoverCard>
                     <HoverCardTrigger asChild>
                         <Button

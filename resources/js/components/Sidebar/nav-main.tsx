@@ -1,9 +1,9 @@
 import { NavItem } from "@/types";
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
-import { welcome } from "@/routes";
 import { LayoutDashboard, ClipboardList, ListTodo } from 'lucide-react';
 import { Link, usePage } from "@inertiajs/react";
 import admin from "@/routes/admin";
+import user from "@/routes/user";
 
 const navItems: NavItem[] = [
     {
@@ -13,12 +13,12 @@ const navItems: NavItem[] = [
     },
     {
         title: 'Tasks',
-        href: welcome(),
+        href: user.tasks.url(),
         icon: ClipboardList
     },
     {
         title: 'ToDo',
-        href: welcome(),
+        href: user.todo.url(),
         icon: ListTodo
     }
 ];

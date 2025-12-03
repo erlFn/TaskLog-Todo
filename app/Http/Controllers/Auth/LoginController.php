@@ -38,7 +38,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             return $this->redirectBasedOnRole($user->role);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return back()->withErrors([
                 'error' => 'An unexpected error occurred. Please try again later.'
             ]);

@@ -18,28 +18,32 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            if ($request->expectsJson() || $request->has('api/*')) {
+            if ($request->expectsJson() || $request->is('api/*')) {
                 return response()->json([
-                    'message' => 'Unauthorized access'
+                    'message' => 'Unauthorized access',
                 ], 401);
             }
 
-            return redirect()->route('welcome');
+            return redirect()
+                ->route('welcome')
+                ->with('error', 'Unauthorized access. Please login first to access the page');
         }
 
         $role = Auth::user()->role?->value ?? null;
         $hasAccess = in_array($role, ['admin'], true);
 
         if (!$hasAccess) {
-            if ($request->expectsJson() || $request->has('api/*')) {
+            if ($request->expectsJson() || $request->is('api/*')) {
                 return response()->json([
-                    'message' => 'Unauthorrized access'
-                ]);
+                    'message' => 'Unauthorized access',
+                ], 403);
             }
 
             Log::warning('URL bypass attempt');
 
-            return redirect()->route('welcome');
+            return redirect()
+                ->route('welcome')
+                ->with('error', 'Unauthorized access. Please login first to access the page');
         }
 
         return $next($request);
