@@ -1,6 +1,11 @@
 import { Clipboard, ListTodo } from "lucide-react";
 
-export function DataMetrics() {
+interface ContentProps {
+    tasksCount: number;
+    todoCount: number;
+}
+
+export function DataMetrics({ tasksCount, todoCount } : ContentProps) {
     const style = 'p-4 rounded-sm border flex flex-col gap-4'; 
 
     const renderLabel = (label: string) => {
@@ -25,7 +30,7 @@ export function DataMetrics() {
                     {renderLabel('Tasks')}
                 </span>
                 <p className="text-sky-600 text-4xl font-mono font-light">
-                    100
+                    {tasksCount}
                 </p>
             </div>
             <div className={`${style} border-teal-400/50 bg-teal-400/10`}>
@@ -36,7 +41,7 @@ export function DataMetrics() {
                     {renderLabel('To Do')}
                 </span>
                 <p className="text-teal-600 text-4xl font-mono font-light">
-                    88
+                    {todoCount}
                 </p>
             </div>
         </>

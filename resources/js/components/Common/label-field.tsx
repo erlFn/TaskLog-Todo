@@ -1,0 +1,60 @@
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { LucideIcon, ArrowRight } from 'lucide-react';
+import React from 'react';
+import { Button } from '../ui/button';
+
+interface ContentProps {
+    label: string;  
+    icon: LucideIcon | null;
+    children: React.ReactNode
+    isLast?: boolean;
+    showAll?: boolean
+    count?: number;
+}
+
+export function LabelField({ label, icon, children, isLast, showAll, count = 0 } : ContentProps) {
+    const Icon = icon;
+
+    return (
+        <div className="flex flex-col gap-2">
+            <div className='flex items-center justify-between'>
+                <span className='flex items-center gap-2 text-muted-foreground text-xs'>
+                    {Icon && (
+                        <Icon
+                            className='size-4'
+                        />
+                    )}
+                    <p className='text-xs'>
+                        {label}
+                    </p>
+                    {count > 0 && (
+                        <Badge className='text-xs bg-blue-500 font-mono'>
+                            {count}
+                        </Badge>
+                    )}
+                </span>
+                {showAll && (
+                    <Button 
+                        type='button'
+                        variant="ghost"
+                        className='flex items-center gap-2 text-muted-foreground cursor-pointer'
+                    >
+                        <p className='text-xs'>
+                            See all
+                        </p>
+                        <ArrowRight
+                            className='size-4'
+                        />
+                    </Button>
+                )}
+            </div>
+            {children}
+            {!isLast && (
+                <Separator
+                    className='mt-4'
+                />
+            )}
+        </div>
+    );
+}
