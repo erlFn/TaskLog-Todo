@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Clipboard, SquarePlus } from 'lucide-react';
 import { SelectPriority } from "./select-priority";
+import { Badge } from "@/components/ui/badge";
 
 export function CreateTaskDialog() {
     return (
@@ -49,6 +50,13 @@ export function CreateTaskDialog() {
                             placeholder="Task Title"
                             className="focus-visible:ring-0"
                         />
+                    </FormField>
+                    <FormField
+                        label="* Status"
+                    >
+                        <Badge className="bg-blue-500">
+                            To Do
+                        </Badge>
                     </FormField>
                     <FormField
                         label="* Description"
