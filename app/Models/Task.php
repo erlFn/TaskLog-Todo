@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Task extends Model
 {
@@ -16,12 +15,7 @@ class Task extends Model
         'title',
         'description',
         'status',
-        'priority',
-        'date_completed'
-    ];
-
-    protected $casts = [
-        'date_completed' => 'datetime'
+        'priority'
     ];
 
     public function creator(): BelongsTo

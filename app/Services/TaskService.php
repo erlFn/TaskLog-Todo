@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Task;
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -26,7 +27,7 @@ class TaskService
             ]);
             
             return $task;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             
             Log::error('TaskService: Failed to create task', [
@@ -56,7 +57,7 @@ class TaskService
             ]);
             
             return $updatedTask;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             
             Log::error('TaskService: Failed to update task', [
@@ -74,22 +75,16 @@ class TaskService
         DB::beginTransaction();
         
         try {
-            $taskId = $task->id;
-            $userId = $task->created_by;
-            $taskTitle = $task->title;
-            
             $result = $task->delete();
             
             DB::commit();
             
             Log::info('TaskService: Task deleted successfully', [
-                'task_id' => $taskId,
-                'user_id' => $userId,
-                'title' => $taskTitle
+                'task_id' => $task->id
             ]);
             
             return $result;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             
             Log::error('TaskService: Failed to delete task', [
@@ -103,24 +98,14 @@ class TaskService
 
     public function buildTaskQuery(User $user, array $filters = [])
     {
-        $query = $user->tasks()
-            ->withCount(['todos as completed_todos_count' => function($q) {
-                $q->where('is_completed', true);
-            }]);
-        
-        if (!empty($filters['status'])) {
-            $query->where('status', $filters['status']);
-        }
+        $query = $user->tasks();
         
         if (!empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
         
         if (!empty($filters['search'])) {
-            $query->where(function($q) use ($filters) {
-                $q->where('title', 'like', "%{$filters['search']}%")
-                  ->orWhere('description', 'like', "%{$filters['search']}%");
-            });
+            $query->where('title', 'like', "%{$filters['search']}%");
         }
         
         return $query;
@@ -129,10 +114,11 @@ class TaskService
     public function getTaskStatusStats(User $user): array
     {
         return [
-            'completed' => $user->tasks()->where('status', 'completed')->count(),
-            'pending' => $user->tasks()->where('status', 'pending')->count(),
-            'in_progress' => $user->tasks()->where('status', 'in_progress')->count(),
-            'cancelled' => $user->tasks()->where('status', 'cancelled')->count(),
+            'To Do' => $user->tasks()->where('status', 'To Do')->count(),
+            'In Progress' => $user->tasks()->where('status', 'In Progress')->count(),
+            'In Review' => $user->tasks()->where('status', 'In Review')->count(),
+            'Done' => $user->tasks()->where('status', 'Done')->count(),
+            'Closed' => $user->tasks()->where('status', 'Closed')->count(),
         ];
     }
 }

@@ -5,10 +5,10 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use App\Services\TaskService;
+use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class TaskController extends Controller
@@ -23,13 +23,11 @@ class TaskController extends Controller
     {
         try {
             $user = Auth::user();
-            $filters = $request->only(['search', 'status', 'priority']);
+            $filters = $request->only(['search', 'priority']);
             
             $query = $this->taskService->buildTaskQuery($user, $filters);
             
-            $sortBy = $filters['sort_by'] ?? 'created_at';
-            $sortOrder = $filters['sort_order'] ?? 'desc';
-            $query->orderBy($sortBy, $sortOrder);
+            $query->orderByDesc('created_at');
             
             $tasks = $query->paginate($filters['per_page'] ?? 15);
             
@@ -41,13 +39,7 @@ class TaskController extends Controller
                 'filters' => $filters
             ]);
             
-        } catch (\Exception $e) {
-            Log::error('TaskController: Failed to load tasks index', [
-                'user_id' => Auth::id(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
+        } catch (Exception $e) {
             return back()
                 ->with('error', 'Failed to load tasks. Please try again.');
         }
@@ -58,27 +50,16 @@ class TaskController extends Controller
         try {
             $validated = $request->validate([
                 'title' => ['required', 'string', 'max:255'],
-                'description' => ['required', 'string'],
-                'priority' => ['required', 'in:low,medium,high,urgent'],
+                'description' => ['required', 'string', 'max:1000'],
+                'priority' => ['required', 'in:normal,medium,high,urgent'],
             ]);
 
             $task = $this->taskService->createTask($validated, Auth::user());
 
-            Log::info('TaskController: Task created via controller', [
-                'task_id' => $task->id,
-                'user_id' => Auth::id(),
-            ]);
-
             return redirect()->route('user.tasks.index')
                 ->with('success', 'Task created successfully');
                 
-        } catch (\Exception $e) {
-            Log::error('TaskController: Failed to create task', [
-                'user_id' => Auth::id(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
+        } catch (Exception $e) {
             return back()
                 ->withInput()
                 ->with('error', 'Failed to create task. Please try again.');
@@ -92,29 +73,17 @@ class TaskController extends Controller
         try {
             $validated = $request->validate([
                 'title' => ['required', 'string', 'max:255'],
-                'description' => ['required', 'string'],
+                'description' => ['required', 'string', 'max:1000'],
                 'status' => ['required', 'in:pending,in_progress,completed,cancelled'],
                 'priority' => ['required', 'in:low,medium,high,urgent'],
             ]);
 
             $updatedTask = $this->taskService->updateTask($task, $validated);
-            
-            Log::info('TaskController: Task updated via controller', [
-                'task_id' => $updatedTask->id,
-                'user_id' => Auth::id(),
-            ]);
 
             return redirect()->route('user.tasks.index')
                 ->with('success', 'Task updated successfully');
                 
-        } catch (\Exception $e) {
-            Log::error('TaskController: Failed to update task', [
-                'task_id' => $task->id,
-                'user_id' => Auth::id(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
+        } catch (Exception $e) {
             return back()
                 ->withInput()
                 ->with('error', 'Failed to update task. Please try again.');
@@ -128,22 +97,10 @@ class TaskController extends Controller
         try {
             $this->taskService->deleteTask($task);
             
-            Log::info('TaskController: Task deleted via controller', [
-                'task_id' => $task->id,
-                'user_id' => Auth::id(),
-            ]);
-            
             return redirect()->route('user.tasks.index')
                 ->with('success', 'Task deleted successfully');
                 
-        } catch (\Exception $e) {
-            Log::error('TaskController: Failed to delete task', [
-                'task_id' => $task->id ?? 'unknown',
-                'user_id' => Auth::id(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
+        } catch (Exception $e) {
             return back()
                 ->with('error', 'Failed to delete task. Please try again.');
         }
