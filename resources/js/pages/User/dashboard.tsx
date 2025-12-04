@@ -4,7 +4,7 @@ import { RenderSkeleton } from "@/components/Common/render-skeleton";
 import AppLayout from "@/layouts/app-layout";
 import user from "@/routes/user";
 import { BreadcrumbItem } from "@/types";
-import { HardDriveDownload, ClipboardCheck, ListTodo } from 'lucide-react'
+import { HardDriveDownload, Clipboard, LayoutList } from 'lucide-react'
 
 export default function Dashboard() {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -28,7 +28,7 @@ export default function Dashboard() {
                     </div>
                 </LabelField>
                 <LabelField
-                    icon={ClipboardCheck}
+                    icon={Clipboard}
                     label="Tasks"
                     count={100}
                     showAll={true}
@@ -40,7 +40,7 @@ export default function Dashboard() {
                     </div>
                 </LabelField>
                 <LabelField
-                    icon={ListTodo}
+                    icon={LayoutList}
                     label="To do"
                     count={1}
                     showAll={true}

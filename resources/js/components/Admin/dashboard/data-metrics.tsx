@@ -1,4 +1,4 @@
-import { Clipboard, ListTodo } from "lucide-react";
+import { Clipboard, LayoutList } from "lucide-react";
 
 interface ContentProps {
     tasksCount: number;
@@ -35,7 +35,7 @@ export function DataMetrics({ tasksCount, todoCount } : ContentProps) {
             </div>
             <div className={`${style} border-teal-400/50 bg-teal-400/10`}>
                 <span className="flex items-center gap-2 text-muted-foreground">
-                    <ListTodo
+                    <LayoutList
                         className="size-4"
                     />
                     {renderLabel('To Do')}
