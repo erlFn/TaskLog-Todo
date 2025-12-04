@@ -8,7 +8,11 @@
 01. Title
 02. Description
 03. Status ['To Do', 'In Progres', 'In Review', 'Done', 'Closed']
+03.1
+    Status values: ['to_do', 'in_progress', 'in_review, 'done', 'closed]
 04. Priority ['Low', 'Normal', 'High', 'Urgent']
+04.1
+    Priority values: ['low', 'normal', 'high', 'urgent']
 
 <UI>
 - Task Log should have a table-type design
