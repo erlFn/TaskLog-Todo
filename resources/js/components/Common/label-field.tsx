@@ -11,14 +11,15 @@ interface ContentProps {
     isLast?: boolean;
     showAll?: boolean
     count?: number;
+    hasSep?: boolean;
 }
 
-export function LabelField({ label, icon, children, isLast, showAll, count = 0 } : ContentProps) {
+export function LabelField({ label, icon, children, isLast, showAll, hasSep, count = 0 } : ContentProps) {
     const Icon = icon;
 
     return (
         <div className="flex flex-col gap-2">
-            <div className='flex items-center justify-between'>
+            <div className='flex items-center justify-between gap-4'>
                 <span className='flex items-center gap-2 text-muted-foreground text-xs'>
                     {Icon && (
                         <Icon
@@ -34,6 +35,9 @@ export function LabelField({ label, icon, children, isLast, showAll, count = 0 }
                         </Badge>
                     )}
                 </span>
+                {hasSep && (
+                    <Separator className='flex-1'/>
+                )}
                 {showAll && (
                     <Button 
                         type='button'

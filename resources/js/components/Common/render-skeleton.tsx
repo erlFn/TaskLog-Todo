@@ -6,7 +6,7 @@ interface ContentProps {
     hasThin?: boolean;
 }
 
-export function RenderSkeleton({ count, hasThin = false, status } : ContentProps) {
+export function RenderSkeleton({ count, hasThin = false, status} : ContentProps) {
 
     const getColors = (value: string) => {
         const colorMap: Record<string, { bg: string }> = {
