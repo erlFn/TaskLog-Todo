@@ -31,6 +31,7 @@ export default function Dashboard() {
                     icon={Clipboard}
                     label="Tasks Data"
                     showAll={true}
+                    count={4}
                 >
                     <div className="grid grid-cols-3 gap-2">
                         <RenderSkeleton
@@ -43,6 +44,7 @@ export default function Dashboard() {
                     label="To Do Data"
                     showAll={true}
                     isLast={true}
+                    count={2}
                 >
                     <div className="grid grid-cols-4 gap-2">
                         <RenderSkeleton

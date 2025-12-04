@@ -20,6 +20,7 @@ export default function Index() {
                     label="Tasks Overview"
                     hasSep={true}
                     isLast={true}
+                    count={18}
                 >
                     <div className="grid grid-cols-5 gap-4">
                         <RenderSkeleton
