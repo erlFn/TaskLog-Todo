@@ -25,7 +25,8 @@ class ClearLogsCommand extends Command
      */
     public function handle()
     {
-        exec('echo "" > ' . storage_path('logs/laravel.log'));
+        // exec('echo "" > ' . storage_path('logs/laravel.log'));
+        file_put_contents(storage_path('logs/laravel.log'), '');
         $this->info('Laravel Logs Cleared');
     }
 }
