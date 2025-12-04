@@ -100,6 +100,10 @@ class TaskService
     {
         $query = $user->tasks();
         
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+        
         if (!empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
@@ -115,7 +119,7 @@ class TaskService
     {
         return [
             'To Do' => $user->tasks()->where('status', 'To Do')->count(),
-            'In Progress' => $user->tasks()->where('status', 'In Progress')->count(),
+            'IN Progress' => $user->tasks()->where('status', 'In Progress')->count(),
             'In Review' => $user->tasks()->where('status', 'In Review')->count(),
             'Done' => $user->tasks()->where('status', 'Done')->count(),
             'Closed' => $user->tasks()->where('status', 'Closed')->count(),

@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Task;
-use App\Models\User;
 use App\Services\TaskService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class TaskController extends Controller
@@ -20,13 +20,9 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         try {
-            $filters = $request->only(['search', 'status', 'priority', 'user_id']);
+            $filters = $request->only(['search', 'status', 'priority']);
             
             $query = Task::with('creator');
-            
-            if (!empty($filters['user_id'])) {
-                $query->where('created_by', $filters['user_id']);
-            }
             
             if (!empty($filters['status'])) {
                 $query->where('status', $filters['status']);
@@ -37,10 +33,7 @@ class TaskController extends Controller
             }
             
             if (!empty($filters['search'])) {
-                $query->where(function($q) use ($filters) {
-                    $q->where('title', 'like', "%{$filters['search']}%")
-                      ->orWhere('description', 'like', "%{$filters['search']}%");
-                });
+                $query->where('title', 'like', "%{$filters['search']}%");
             }
             
             $tasks = $query->latest()->paginate(15);
@@ -51,6 +44,12 @@ class TaskController extends Controller
             ]);
             
         } catch (Exception $e) {
+            Log::error('Admin failed to view tasks list', [
+                'admin_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return back()
                 ->with('error', 'Failed to load tasks. Please try again.');
         }
@@ -61,22 +60,29 @@ class TaskController extends Controller
         try {
             $validated = $request->validate([
                 'title' => ['required', 'string', 'max:255'],
-                'description' => ['required', 'string'],
-                'status' => ['required', 'in:pending,in_progress,completed,cancelled'],
-                'priority' => ['required', 'in:low,medium,high,urgent'],
+                'description' => ['required', 'string', 'max:1000'],
+                'status' => ['required', 'in:To Do,In Progress,In Review,Done,Closed'],
+                'priority' => ['required', 'in:Low,Normal,High,Urgent'],
             ]);
 
-            $updatedTask = $this->taskService->updateTask($task, $validated);
+            $this->taskService->updateTask($task, $validated);
 
             return redirect()->route('admin.tasks.index')
                 ->with('success', 'Task updated successfully');
                 
         } catch (Exception $e) {
+            Log::error('Admin failed to update task', [
+                'admin_id' => Auth::id(),
+                'task_id' => $task->id ?? 'unknown',
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return back()
                 ->withInput()
                 ->with('error', 'Failed to update task. Please try again.');
         }
-    }
+    }   
 
     public function destroy(Task $task)
     {
@@ -87,6 +93,13 @@ class TaskController extends Controller
                 ->with('success', 'Task deleted successfully');
                 
         } catch (Exception $e) {
+            Log::error('Admin failed to delete task', [
+                'admin_id' => Auth::id(),
+                'task_id' => $task->id ?? 'unknown',
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return back()
                 ->with('error', 'Failed to delete task. Please try again.');
         }
