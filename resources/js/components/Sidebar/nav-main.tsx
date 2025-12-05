@@ -16,7 +16,7 @@ const navItems: NavItem[] = [
         icon: ClipboardList
     },
     {
-        title: 'ToDo',
+        title: 'To Do',
         href: user.todo.url(),
         icon: ListTodo
     }
