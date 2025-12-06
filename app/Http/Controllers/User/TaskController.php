@@ -24,7 +24,7 @@ class TaskController extends Controller
     {
         try {
             $user = Auth::user();
-            $filters = $request->only(['search', 'priority', 'status']);
+            $filters = $request->only(['search', 'priority']);
             
             $query = $this->taskService->buildTaskQuery($user, $filters);
             $query->orderByDesc('created_at');

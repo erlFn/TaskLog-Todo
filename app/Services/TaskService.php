@@ -100,16 +100,13 @@ class TaskService
     {
         $query = $user->tasks();
         
-        if (!empty($filters['status'])) {
-            $query->where('status', $filters['status']);
-        }
-        
         if (!empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
         
         if (!empty($filters['search'])) {
-            $query->where('title', 'like', "%{$filters['search']}%");
+            $searchTerm = strtolower($filters['search']);
+            $query->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"]);
         }
         
         return $query;

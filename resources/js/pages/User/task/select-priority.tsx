@@ -1,9 +1,10 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TabsData } from "@/types";
-import { useState } from "react";
 
 interface ContentProps {
-    defaultValue: string;
+    value?: string;
+    onValueChange?: (value: string) => void;
+    placeholder?: string;
 }
 
 const selectItems: TabsData[] = [
@@ -36,20 +37,18 @@ const getColors = (value: string) => {
     return colorMap[value] || { bg: 'bg-neutral-500', text: 'text-neutral-500' };
 };
 
-export function SelectPriority({ defaultValue = "" } : ContentProps) {
-    const [ value, setValue ] = useState(defaultValue);
-
+export function SelectPriority({ value = "", onValueChange, placeholder = "Select Priority" } : ContentProps) {
     return (
         <Select
             name="priority"
-            value={value}
-            onValueChange={value => setValue(value)}
+            value={value || undefined}
+            onValueChange={onValueChange}
         >
             <SelectTrigger
                 className="w-full cursor-pointer"
             >
                 <SelectValue
-                    placeholder="Select Priority"
+                    placeholder={placeholder}
                 />
             </SelectTrigger>
             <SelectContent>

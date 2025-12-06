@@ -9,15 +9,20 @@ import { TabInReview } from "./tab-in-review";
 import { TabClosed } from "./tab-closed";
 import { TabDone } from "./tab-done";
 import { CreateTaskDialog } from "./create-task-dialog";
+import { TaskFilters } from "./task-filters";
 
 interface ContentProps {
     tasks: {
         data: Task[];
     };
     stats: Record<string, number>;
+    filters?: {
+        search?: string;
+        priority?: string;
+    };
 }
 
-export default function Index({ tasks, stats } : ContentProps) {
+export default function Index({ tasks, stats, filters = {} } : ContentProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Tasks', href: user.tasks.url() }
     ];
@@ -51,7 +56,13 @@ export default function Index({ tasks, stats } : ContentProps) {
                     stats={stats}
                 />
                 
-                <CreateTaskDialog/>
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                    <CreateTaskDialog/>
+                    <TaskFilters
+                        search={filters?.search}
+                        priority={filters?.priority}
+                    />
+                </div>
 
                 <Tabs defaultValue="to_do">
                     <TabsList className="w-full space-x-4">
