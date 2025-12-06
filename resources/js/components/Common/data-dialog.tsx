@@ -1,7 +1,7 @@
 import { Task } from "@/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { DialogDescription } from "@radix-ui/react-dialog";
-import { formatDate } from "date-fns";
+import { formatDate, formatDistanceToNow, parseISO } from "date-fns";
 import { Badge } from "../ui/badge";
 import { Flag, Calendar, Calendar1} from 'lucide-react';
 import { DeleteButton } from "./tasks/delete-button";
@@ -13,7 +13,11 @@ interface ContentProps {
 
 export function DataDialog({ tasks } : ContentProps) {
     const getDate = (date: string) => {
-        return formatDate(date, 'yyyy, MMMM dd - h:mm a');
+        return formatDate(parseISO(date), 'yyyy, MMMM dd - h:mm a');
+    };
+
+    const getRelativeTime = (date: string) => {
+        return formatDistanceToNow(parseISO(date), { addSuffix: true });
     };
 
     const getStatus = (value: string) => {
@@ -115,7 +119,7 @@ export function DataDialog({ tasks } : ContentProps) {
                                 </p>
                             </div>
                             <Badge className=" bg-gray-300 text-neutral-700">
-                                {getDate(tasks.updated_at)}
+                                {getRelativeTime(tasks.updated_at)}
                             </Badge>
                         </div>
                         {/* End Date Updated */}
