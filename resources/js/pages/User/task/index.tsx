@@ -2,7 +2,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TaskStats } from "@/components/User/task/task-stats";
 import AppLayout from "@/layouts/app-layout";
 import user from "@/routes/user";
-import { BreadcrumbItem, TabsData } from "@/types";
+import { BreadcrumbItem, TabsData, Task } from "@/types";
 import { TabToDo } from "./tab-todo";
 import { TabInProgress } from "./tab-in-progress";
 import { TabInReview } from "./tab-in-review";
@@ -10,7 +10,13 @@ import { TabClosed } from "./tab-closed";
 import { TabDone } from "./tab-done";
 import { CreateTaskDialog } from "./create-task-dialog";
 
-export default function Index() {
+interface ContentProps {
+    tasks: {
+        data: Task[];
+    };
+}
+
+export default function Index({ tasks } : ContentProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Tasks', href: user.tasks.url() }
     ];
@@ -61,19 +67,19 @@ export default function Index() {
                         })}
                     </TabsList>
                     <TabToDo
-                        count={5}
+                        tasks={tasks.data}
                     />
                     <TabInProgress
-                        count={10}
+                        tasks={tasks.data}
                     />
                     <TabInReview
-                        count={12}
+                        tasks={tasks.data}
                     />
                     <TabDone
-                        count={17}
+                        tasks={tasks.data}
                     />
                     <TabClosed
-                        count={8}
+                        tasks={tasks.data}
                     />
                 </Tabs>      
             </div>

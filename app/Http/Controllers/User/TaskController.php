@@ -37,7 +37,6 @@ class TaskController extends Controller
                 'stats' => $stats,
                 'filters' => $filters
             ]);
-            
         } catch (Exception $e) {
             Log::error('User failed to view tasks list', [
                 'user_id' => Auth::id(),
@@ -53,7 +52,6 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         try {
-
             $validated = $request->validate([
                 'title' => ['required', 'string', 'max:255'],
                 'description' => ['required', 'string', 'max:1000'],
@@ -86,8 +84,8 @@ class TaskController extends Controller
             $validated = $request->validate([
                 'title' => ['required', 'string', 'max:255'],
                 'description' => ['required', 'string', 'max:1000'],
-                'status' => ['required', 'in:To Do,In Progress,In Review,Done,Closed'],
-                'priority' => ['required', 'in:Low,Normal,High,Urgent'],
+                'status' => ['required', 'in:to_do,in_progress,in_review,done,closed'],
+                'priority' => ['required', 'in:low,normal,high,urgent'],
             ]);
 
             $this->taskService->updateTask($task, $validated);

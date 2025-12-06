@@ -1,20 +1,25 @@
-import { RenderSkeleton } from "@/components/Common/render-skeleton";
-import { TabsContent } from "@radix-ui/react-tabs";
+import { DataDialog } from "@/components/Common/data-dialog";
+import { TabsContent } from "@/components/ui/tabs";
+import { Task } from "@/types";
 
 interface ContentProps {
-    count: number;
+    tasks: Task[];
 }
 
-export function TabClosed({ count } : ContentProps) {
+export function TabClosed({ tasks } : ContentProps) {
+    const filteredData = tasks.filter(task => task.status.includes('closed'));
+
     return (
         <TabsContent
             value="closed"
         >
             <div className="grid grid-cols-5 gap-4">
-                <RenderSkeleton
-                    count={count}
-                    hasThin={true}
-                />
+                {filteredData.map(task => (
+                    <DataDialog
+                        key={task.id}
+                        tasks={task}
+                    />
+                ))}
             </div>
         </TabsContent>
     );
