@@ -3,6 +3,8 @@ import { Separator } from '@/components/ui/separator';
 import { LucideIcon, ArrowRight } from 'lucide-react';
 import React from 'react';
 import { Button } from '../ui/button';
+import { InertiaLinkProps, router } from '@inertiajs/react';
+import user from '@/routes/user';
 
 interface ContentProps {
     label: string;  
@@ -12,10 +14,15 @@ interface ContentProps {
     showAll?: boolean
     count?: number;
     hasSep?: boolean;
+    href?: NonNullable<InertiaLinkProps['href']>;
 }
 
-export function LabelField({ label, icon, children, isLast, showAll, hasSep, count = 0 } : ContentProps) {
+export function LabelField({ label, icon, children, isLast, showAll, hasSep, href, count = 0 } : ContentProps) {
     const Icon = icon;
+
+    const handleRedirect = () => {
+        router.get(href ?? user.dashboard.url());
+    }
 
     return (
         <div className="flex flex-col gap-2">
@@ -42,6 +49,7 @@ export function LabelField({ label, icon, children, isLast, showAll, hasSep, cou
                     <Button 
                         type='button'
                         variant="ghost"
+                        onClick={handleRedirect}
                         className='flex items-center gap-2 text-muted-foreground cursor-pointer'
                     >
                         <p className='text-xs'>
