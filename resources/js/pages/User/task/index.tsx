@@ -14,9 +14,10 @@ interface ContentProps {
     tasks: {
         data: Task[];
     };
+    stats: Record<string, number>;
 }
 
-export default function Index({ tasks } : ContentProps) {
+export default function Index({ tasks, stats } : ContentProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Tasks', href: user.tasks.url() }
     ];
@@ -46,7 +47,9 @@ export default function Index({ tasks } : ContentProps) {
             breadcrumbs={breadcrumbs}
         >
             <div className="space-y-4">
-                <TaskStats/>
+                <TaskStats
+                    stats={stats}
+                />
                 
                 <CreateTaskDialog/>
 
@@ -59,9 +62,11 @@ export default function Index({ tasks } : ContentProps) {
                                 <TabsTrigger
                                     key={data.value}
                                     value={data.value}
-                                    className={`cursor-pointer ${colors.activeBg} data-[state=active]:text-secondary font-normal text-sm text-muted-foreground transition-all duration-350`}
+                                    className={`cursor-pointer ${colors.activeBg} data-[state=active]:text-secondary font-normal text-sm text-muted-foreground transition-all duration-350 flex items-center gap-2`}
                                 >
-                                    {data.label}
+                                    <p>
+                                        {data.label}
+                                    </p>
                                 </TabsTrigger>
                             );
                         })}
