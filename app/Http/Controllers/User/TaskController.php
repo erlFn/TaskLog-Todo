@@ -53,15 +53,16 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         try {
+
             $validated = $request->validate([
                 'title' => ['required', 'string', 'max:255'],
                 'description' => ['required', 'string', 'max:1000'],
-                'priority' => ['required', 'in:Low,Normal,High,Urgent'],
+                'priority' => ['required', 'in:low,normal,high,urgent'],
             ]);
 
             $this->taskService->createTask($validated, Auth::user());
 
-            return redirect()->route('user.tasks.index')
+            return redirect()->route('user.tasks')
                 ->with('success', 'Task created successfully');
                 
         } catch (Exception $e) {

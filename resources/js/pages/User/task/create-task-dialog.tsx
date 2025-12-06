@@ -7,10 +7,25 @@ import { Textarea } from "@/components/ui/textarea";
 import { Clipboard, SquarePlus } from 'lucide-react';
 import { SelectPriority } from "./select-priority";
 import { Badge } from "@/components/ui/badge";
+import { Form } from "@inertiajs/react";
+import user from "@/routes/user";
+import { TitleCase } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function CreateTaskDialog() {
+    const [ title, setTitle ] = useState("");
+    const [ openDialog, setOpenDialog ] = useState(false);
+
+    useEffect(() => {
+        setTitle('');
+    }, [openDialog]);
+
     return (
-        <Dialog>
+        <Dialog
+            open={openDialog}
+            onOpenChange={setOpenDialog}
+        >
             <DialogTrigger
                 asChild
             >
@@ -42,13 +57,33 @@ export function CreateTaskDialog() {
                     </DialogDescription>
                 </DialogHeader>
                 <Separator/>
-                <div className="space-y-4">
+                <Form
+                    action={user.tasks.store()}
+                    method="post"
+                    className="space-y-4"
+                    onSuccess={() => {
+                        toast.success('Successfully created a new task');
+                        setOpenDialog(false);
+                    }}
+                    onError={(error) => {
+                        if (typeof error === 'string') {
+                            toast.error(error);
+                        } else if (typeof error === 'object' && error !== null) {
+                            Object.values(error).forEach(msg => {
+                                toast.error(msg as string);
+                            });
+                        }
+                    }}
+                >
                     <FormField
                         label="* Title"
                     >
                         <Input
+                            name="title"
                             placeholder="Task Title"
                             className="focus-visible:ring-0"
+                            value={title}
+                            onChange={e => setTitle(TitleCase(e.target.value))}
                         />
                     </FormField>
                     <FormField
@@ -62,6 +97,7 @@ export function CreateTaskDialog() {
                         label="* Description"
                     >
                         <Textarea
+                            name="description"
                             rows={5}
                             placeholder="A brief description of your task"
                             className="resize-none focus-visible:ring-0"
@@ -72,14 +108,15 @@ export function CreateTaskDialog() {
                     >
                         <SelectPriority/>
                     </FormField>
-                </div>
-                <DialogFooter>
-                    <Button
-                        className="w-full cursor-pointer"
-                    >
-                        <SquarePlus/>
-                    </Button>
-                </DialogFooter>
+                    <DialogFooter>
+                        <Button
+                            type="submit"
+                            className="w-full cursor-pointer"
+                        >
+                            <SquarePlus/>
+                        </Button>
+                    </DialogFooter>
+                </Form>
             </DialogContent>
         </Dialog>
     );

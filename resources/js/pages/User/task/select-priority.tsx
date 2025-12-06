@@ -1,5 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TabsData } from "@/types";
+import { useState } from "react";
 
 const selectItems: TabsData[] = [
     {
@@ -32,8 +33,14 @@ const getColors = (value: string) => {
 };
 
 export function SelectPriority() {
+    const [ value, setValue ] = useState("");
+
     return (
-        <Select>
+        <Select
+            name="priority"
+            value={value}
+            onValueChange={value => setValue(value)}
+        >
             <SelectTrigger
                 className="w-full cursor-pointer"
             >

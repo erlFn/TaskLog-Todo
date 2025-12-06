@@ -13,8 +13,8 @@ return new class extends Migration
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->string('title');
             $table->text('description');
-            $table->enum('status', ['To Do', 'In Progress', 'In Review', 'Done', 'Closed']);
-            $table->enum('priority', ['Low', 'Normal', 'High', 'Urgent']);
+            $table->enum('status', ['to_do', 'in_progress', 'in_review', 'done', 'closed'])->default('to_do');
+            $table->enum('priority', ['low', 'normal', 'high', 'urgent']);
             $table->timestamps();
             
             $table->index(['created_by', 'status']);
