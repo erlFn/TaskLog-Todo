@@ -20,6 +20,7 @@ interface ContentProps {
 export function EditDialog({ task } : ContentProps) {
     const [ title, setTitle ] = useState(task.title);
     const [ description, setDescription ] = useState(task.description);
+    const [ priority, setPriority ] = useState(task.priority);
 
     return (
         <AlertDialog>
@@ -95,7 +96,8 @@ export function EditDialog({ task } : ContentProps) {
                         label="* Priority"
                     >
                         <SelectPriority
-                            value={task.priority}
+                            value={priority}
+                            onValueChange={setPriority}
                         />
                     </FormField>
 
