@@ -30,7 +30,7 @@ export default function Dashboard({ tasks, taskCount } : ContentProps) {
                 >
                     <div className="grid grid-cols-2 gap-2">
                         <DataMetrics
-                            tasksCount={88}
+                            tasksCount={taskCount}
                             todoCount={100}
                         />
                     </div>
