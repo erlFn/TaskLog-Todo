@@ -95,7 +95,7 @@ export function EditDialog({ task } : ContentProps) {
                         label="* Priority"
                     >
                         <SelectPriority
-                            defaultValue={task.priority}
+                            value={task.priority}
                         />
                     </FormField>
 
