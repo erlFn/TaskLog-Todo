@@ -4,6 +4,7 @@ import { router } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { Trash } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 interface ContentProps {
     task: Task;
@@ -11,7 +12,11 @@ interface ContentProps {
 
 export function DeleteButton({ task } : ContentProps) {
     const handleDelete = () => {
-        router.post(user.tasks.destroy(task));
+        router.post(user.tasks.destroy(task), {}, {
+            onSuccess: () => {
+                toast.success(`Successfully deleted "${task.title}"`);
+            }
+        });
     };
 
     return (

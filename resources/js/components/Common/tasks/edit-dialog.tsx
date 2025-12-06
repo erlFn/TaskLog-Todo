@@ -11,6 +11,7 @@ import { Task } from "@/types";
 import { Form } from "@inertiajs/react";
 import { Pen } from 'lucide-react';
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface ContentProps {
     task: Task;
@@ -46,6 +47,18 @@ export function EditDialog({ task } : ContentProps) {
                     action={user.tasks.update(task)}
                     method="put"
                     className="space-y-4"
+                    onError={(error) => {
+                        if (typeof error === 'string') {
+                            toast.error(error);
+                        } else if (typeof error === 'object' && error !== null) {
+                            Object.values(error).forEach(msg => {
+                                toast.error(msg as string);
+                            });
+                        }
+                    }}
+                    onSuccess={() => {
+                        toast.success(`Succesfully updated "${task.title}"`);
+                    }}
                 >
                     <FormField
                         label="* Title"
