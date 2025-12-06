@@ -7,6 +7,7 @@ use App\RoleType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -39,6 +40,11 @@ class LoginController extends Controller
 
             return $this->redirectBasedOnRole($user->role);
         } catch (Exception $e) {
+            Log::error("Failed to authenticate user", [
+                'user_email' => $request->email,
+                'error' => $e->getMessage()
+            ]);
+            
             return back()->withErrors([
                 'error' => 'An unexpected error occurred. Please try again later.'
             ]);
