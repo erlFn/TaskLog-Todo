@@ -66,7 +66,7 @@ export function DataDialog({ tasks } : ContentProps) {
                     <DialogTitle className="font-normal">
                         {tasks.title}
                     </DialogTitle>
-                    <DialogDescription className="text-sm text-muted-foreground">
+                    <DialogDescription className="text-sm text-muted-foreground break-all">
                         {tasks.description}
                     </DialogDescription>
                 </DialogHeader>
