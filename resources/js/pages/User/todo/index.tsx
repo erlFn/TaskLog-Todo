@@ -8,7 +8,7 @@ import { RenderSkeleton } from "@/components/Common/render-skeleton";
 
 export default function Index() {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'ToDo', href: user.tasks.url() }
+        { title: 'ToDo', href: user.todo.url() }
     ];
 
     return (
