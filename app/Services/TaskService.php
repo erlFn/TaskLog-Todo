@@ -118,11 +118,11 @@ class TaskService
     public function getTaskStatusStats(User $user): array
     {
         return [
-            'To Do' => $user->tasks()->where('status', 'to_do')->count(),
-            'IN Progress' => $user->tasks()->where('status', 'in_progress')->count(),
-            'In Review' => $user->tasks()->where('status', 'in_review')->count(),
-            'Done' => $user->tasks()->where('status', 'done')->count(),
-            'Closed' => $user->tasks()->where('status', 'closed')->count(),
+            'to_do' => $user->tasks()->where('status', 'to_do')->count(),
+            'in_progress' => $user->tasks()->where('status', 'in_progress')->count(),
+            'in_review' => $user->tasks()->where('status', 'in_review')->count(),
+            'done' => $user->tasks()->where('status', 'done')->count(),
+            'closed' => $user->tasks()->where('status', 'closed')->count(),
         ];
     }
 }
