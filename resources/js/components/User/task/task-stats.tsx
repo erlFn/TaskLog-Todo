@@ -8,8 +8,8 @@ interface ContentProps {
 export function TaskStats({ stats } : ContentProps) {
     const cardValues = [
         { value: 'to_do' },
-        { value: 'in_review' },
         { value: 'in_progress' },
+        { value: 'in_review' },
         { value: 'done' },
         { value: 'closed' },
     ];
