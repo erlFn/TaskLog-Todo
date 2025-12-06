@@ -106,7 +106,9 @@ export function CreateTaskDialog() {
                     <FormField
                         label="* Priority"
                     >
-                        <SelectPriority/>
+                        <SelectPriority
+                            defaultValue=""
+                        />
                     </FormField>
                     <DialogFooter>
                         <Button

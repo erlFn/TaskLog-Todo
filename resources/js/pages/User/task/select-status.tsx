@@ -6,42 +6,32 @@ interface ContentProps {
     defaultValue: string;
 }
 
-const selectItems: TabsData[] = [
-    {
-        label: 'Low',
-        value: 'low',
-    },
-    {
-        label: 'Normal',
-        value: 'normal',
-    },
-    {
-        label: 'High',
-        value: 'high',
-    },
-    {
-        label: 'Urgent',
-        value: 'urgent',
-    },
-];
-
-const getColors = (value: string) => {
-    const colorMap: Record<string, { bg: string; text: string }> = {
-        'low': { bg: 'bg-neutral-500', text: 'text-neutral-500' },
-        'normal': { bg: 'bg-blue-500', text: 'text-blue-500' },
-        'high': { bg: 'bg-orange-500', text: 'text-orange-500' },
-        'urgent': { bg: 'bg-red-500', text: 'text-red-500' },
-    };
-
-    return colorMap[value] || { bg: 'bg-neutral-500', text: 'text-neutral-500' };
-};
-
-export function SelectPriority({ defaultValue = "" } : ContentProps) {
+export function SelectStatus({ defaultValue = "" } : ContentProps) {
     const [ value, setValue ] = useState(defaultValue);
+
+    const statusItems: TabsData[] = [
+        { label: 'To Do', value: 'to_do' },
+        { label: 'In Progress', value: 'in_progress' },
+        { label: 'In Review', value: 'in_review' },
+        { label: 'Done', value: 'done' },
+        { label: 'Closed', value: 'closed' }
+    ];
+
+    const getColors = (value: string) => {
+        const colorMap: Record<string, { bg: string; text: string }> = {
+            'to_do': { bg: 'bg-blue-500', text: 'text-blue-500' },
+            'in_progress': { bg: 'bg-yellow-500', text: 'text-yellow-500' },
+            'in_review': { bg: 'bg-purple-500', text: 'text-purple-500' },
+            'done': { bg: 'bg-green-500', text: 'text-green-500' },
+            'closed': { bg: 'bg-gray-500', text: 'text-gray-500' },
+        }
+
+        return colorMap[value] || { bg: 'bg-blue-500', text: 'text-blue-500' };
+    }
 
     return (
         <Select
-            name="priority"
+            name="status"
             value={value}
             onValueChange={value => setValue(value)}
         >
@@ -49,11 +39,11 @@ export function SelectPriority({ defaultValue = "" } : ContentProps) {
                 className="w-full cursor-pointer"
             >
                 <SelectValue
-                    placeholder="Select Priority"
+                    placeholder="Select Status"
                 />
             </SelectTrigger>
             <SelectContent>
-                {selectItems.map(item => {
+                {statusItems.map(item => {
                     const colors = getColors(item.value);
 
                     return (
@@ -68,7 +58,7 @@ export function SelectPriority({ defaultValue = "" } : ContentProps) {
                             <p
                                 className={colors.text}
                             >
-                                {item.label}
+                              {item.label}  
                             </p>
                         </SelectItem>
                     );

@@ -2,7 +2,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TaskStats } from "@/components/User/task/task-stats";
 import AppLayout from "@/layouts/app-layout";
 import user from "@/routes/user";
-import { BreadcrumbItem, TabsData } from "@/types";
+import { BreadcrumbItem, TabsData, Task } from "@/types";
 import { TabToDo } from "./tab-todo";
 import { TabInProgress } from "./tab-in-progress";
 import { TabInReview } from "./tab-in-review";
@@ -10,7 +10,14 @@ import { TabClosed } from "./tab-closed";
 import { TabDone } from "./tab-done";
 import { CreateTaskDialog } from "./create-task-dialog";
 
-export default function Index() {
+interface ContentProps {
+    tasks: {
+        data: Task[];
+    };
+    stats: Record<string, number>;
+}
+
+export default function Index({ tasks, stats } : ContentProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Tasks', href: user.tasks.url() }
     ];
@@ -40,7 +47,9 @@ export default function Index() {
             breadcrumbs={breadcrumbs}
         >
             <div className="space-y-4">
-                <TaskStats/>
+                <TaskStats
+                    stats={stats}
+                />
                 
                 <CreateTaskDialog/>
 
@@ -53,27 +62,29 @@ export default function Index() {
                                 <TabsTrigger
                                     key={data.value}
                                     value={data.value}
-                                    className={`cursor-pointer ${colors.activeBg} data-[state=active]:text-secondary font-normal text-sm text-muted-foreground transition-all duration-350`}
+                                    className={`cursor-pointer ${colors.activeBg} data-[state=active]:text-secondary font-normal text-sm text-muted-foreground transition-all duration-350 flex items-center gap-2`}
                                 >
-                                    {data.label}
+                                    <p>
+                                        {data.label}
+                                    </p>
                                 </TabsTrigger>
                             );
                         })}
                     </TabsList>
                     <TabToDo
-                        count={5}
+                        tasks={tasks.data}
                     />
                     <TabInProgress
-                        count={10}
+                        tasks={tasks.data}
                     />
                     <TabInReview
-                        count={12}
+                        tasks={tasks.data}
                     />
                     <TabDone
-                        count={17}
+                        tasks={tasks.data}
                     />
                     <TabClosed
-                        count={8}
+                        tasks={tasks.data}
                     />
                 </Tabs>      
             </div>
