@@ -5,6 +5,7 @@ import React from 'react';
 import { Button } from '../ui/button';
 import { InertiaLinkProps, router } from '@inertiajs/react';
 import user from '@/routes/user';
+import { useLoading } from '@/hooks/use-loading';
 
 interface ContentProps {
     label: string;  
@@ -18,9 +19,11 @@ interface ContentProps {
 }
 
 export function LabelField({ label, icon, children, isLast, showAll, hasSep, href, count = 0 } : ContentProps) {
+    const { setIsLoading } = useLoading();
     const Icon = icon;
 
     const handleRedirect = () => {
+        setIsLoading(true);
         router.get(href ?? user.dashboard.url());
     }
 

@@ -5,14 +5,17 @@ import { UserInfo } from "./user-info";
 import { DoorOpen } from 'lucide-react';
 import auth from "@/routes/auth";
 import { User } from "@/types";
+import { useLoading } from "@/hooks/use-loading";
 
 interface ContentProps {
     user: User;
 }
 
 export function UserMenu({ user } : ContentProps) {
+    const { setIsLoading } = useLoading();
 
     const handleLogout = () => {
+        setIsLoading(true);
         router.post(auth.logout());
     };
     
