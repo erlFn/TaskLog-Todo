@@ -13,7 +13,7 @@ interface ContentProps {
 
 export function DataDialog({ tasks } : ContentProps) {
     const getDate = (date: string) => {
-        return formatDate(date, 'yyyy, MMMM dd');
+        return formatDate(date, 'yyyy, MMMM dd - h:mm a');
     };
 
     const getStatus = (value: string) => {
@@ -104,41 +104,40 @@ export function DataDialog({ tasks } : ContentProps) {
                         </div>
                         {/* End Priority */}
                         
-                        <div className="flex gap-8">
-                            {/* Date Updated */}
-                            <div className="flex flex-col gap-1">
-                                <div className="flex items-center gap-2 text-muted-foreground text-xs">
-                                    <Calendar1
-                                        className="size-4"
-                                    />
-                                    <p>
-                                        Last Updated:
-                                    </p>
-                                </div>
-                                <Badge className=" bg-gray-300 text-neutral-700">
-                                    {getDate(tasks.updated_at)}
-                                </Badge>
+                        {/* Date Updated */}
+                        <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-2 text-muted-foreground text-xs">
+                                <Calendar1
+                                    className="size-4"
+                                />
+                                <p>
+                                    Last Updated:
+                                </p>
                             </div>
-                            {/* End Date Updated */}
-
-                            {/* Date Created */}
-                            <div className="flex flex-col gap-1">
-                                <div className="flex items-center gap-2 text-muted-foreground text-xs">
-                                    <Calendar
-                                        className="size-4"
-                                    />
-                                    <p>
-                                        Date Created:
-                                    </p>
-                                </div>
-                                <Badge className="bg-gray-300 text-neutral-700">
-                                    {getDate(tasks.created_at)}
-                                </Badge>
-                            </div>
-                            {/* End Date Created */}
+                            <Badge className=" bg-gray-300 text-neutral-700">
+                                {getDate(tasks.updated_at)}
+                            </Badge>
                         </div>
+                        {/* End Date Updated */}
+
+                        {/* Date Created */}
+                        <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-2 text-muted-foreground text-xs">
+                                <Calendar
+                                    className="size-4"
+                                />
+                                <p>
+                                    Date Created:
+                                </p>
+                            </div>
+                            <Badge className="bg-gray-300 text-neutral-700">
+                                {getDate(tasks.created_at)}
+                            </Badge>
+                        </div>
+                        {/* End Date Created */}
                     </div>
                     {/* End Data */}
+                    
                     <div className="flex flex-col items-end border-l pl-4 gap-2">
                         <p className="text-xs font-medium text-muted-foreground mt-2">
                             Quick Navigation
