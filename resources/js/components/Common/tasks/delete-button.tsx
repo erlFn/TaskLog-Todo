@@ -27,7 +27,7 @@ export function DeleteButton({ task } : ContentProps) {
                     <Trash/>
                 </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className="w-sm">
                 <AlertDialogHeader>
                     <AlertDialogTitle>
                         Are you sure you want to delete "{task.title}"?
