@@ -114,5 +114,6 @@ return [
 
     'admin_emails' => [
         'admin@email.com',
+        'jirehcatindoy@gmail.com'
     ],
 ];
