@@ -6,18 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('todos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('task_id')->nullable();
-            $table->string('name');               
-            $table->text('description')->nullable(); 
-            $table->boolean('is_completed')->default(false); 
-            $table->timestamps();                  
+            $table->string('title');
+            $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('todos');
