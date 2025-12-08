@@ -3,12 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useLoading } from "@/hooks/use-loading";
 import { TitleCase } from "@/lib/utils";
+import user from "@/routes/user";
+import { Form } from "@inertiajs/react";
 import { LayoutList, SquarePlus } from 'lucide-react';
 import { useState } from "react";
 
 export function CreateToDoDialog() {
     const [ title, setTitle ] = useState("");
+    const { setIsLoading } = useLoading();
 
     return (
         <Dialog>
@@ -42,26 +46,35 @@ export function CreateToDoDialog() {
                     </DialogDescription>
                 </DialogHeader>
                 <Separator/>
-                <div>
-                    <FormField
-                        label="* Title"
-                    >
-                        <Input
-                            name="title"
-                            value={title}
-                            onChange={e => setTitle(TitleCase(e.target.value))}
-                            placeholder="Container Title"
-                            className="focus-visible:ring-0"
-                        />
-                    </FormField>
-                </div>
-                <DialogFooter>
-                    <Button
-                        className="w-full cursor-pointer"
-                    >
-                        <SquarePlus/>
-                    </Button>
-                </DialogFooter> 
+                <Form
+                    action={user.todo.store()}
+                    method="post"
+                    onStart={() => setIsLoading(true)}
+                    onFinish={() => setIsLoading(false)}
+                    className="space-y-4"
+                >
+                    <div>
+                        <FormField
+                            label="* Title"
+                        >
+                            <Input
+                                name="title"
+                                value={title}
+                                onChange={e => setTitle(TitleCase(e.target.value))}
+                                placeholder="Container Title"
+                                className="focus-visible:ring-0"
+                            />
+                        </FormField>
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            type="submit"
+                            className="w-full cursor-pointer"
+                        >
+                            <SquarePlus/>
+                        </Button>
+                    </DialogFooter> 
+                </Form>
             </DialogContent>
         </Dialog>
     );

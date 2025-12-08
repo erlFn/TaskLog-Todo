@@ -14,4 +14,5 @@ Route::middleware('user')->name('user.')->group(function () {
     Route::post('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     
     Route::get('/todo', [ToDoController::class, 'index'])->name('todo');
+    Route::post('/todo', [ToDoController::class, 'store'])->name('todo.store');
 });
