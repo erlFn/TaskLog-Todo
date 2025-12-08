@@ -3,9 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { TitleCase } from "@/lib/utils";
 import { LayoutList, SquarePlus } from 'lucide-react';
+import { useState } from "react";
 
 export function CreateToDoDialog() {
+    const [ title, setTitle ] = useState("");
+
     return (
         <Dialog>
             <DialogTrigger
@@ -17,7 +21,7 @@ export function CreateToDoDialog() {
                 >
                     <LayoutList/>
                     <p>
-                        Create To Do Container
+                        Create To do Container
                     </p>
                 </Button>
             </DialogTrigger>
@@ -30,11 +34,11 @@ export function CreateToDoDialog() {
                             className="size-5"
                         />
                         <p>
-                            Create To Do Container
+                            Create To do Container
                         </p>
                     </DialogTitle>
                     <DialogDescription>
-                        Enter a title for your To Do Container
+                        Enter a title for your To do Container
                     </DialogDescription>
                 </DialogHeader>
                 <Separator/>
@@ -43,7 +47,10 @@ export function CreateToDoDialog() {
                         label="* Title"
                     >
                         <Input
-                            placeholder="ToDo Container Title"
+                            name="title"
+                            value={title}
+                            onChange={e => setTitle(TitleCase(e.target.value))}
+                            placeholder="Container Title"
                             className="focus-visible:ring-0"
                         />
                     </FormField>

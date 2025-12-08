@@ -28,12 +28,6 @@ export default function Index() {
                         asdasd
                     </p>
                 </LabelField>
-
-                <div className="grid grid-cols-5 gap-4">
-                    <RenderSkeleton
-                        count={4}
-                    />
-                </div>
             </div>
         </AppLayout>
     );
