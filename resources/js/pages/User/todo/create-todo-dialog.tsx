@@ -8,14 +8,25 @@ import { TitleCase } from "@/lib/utils";
 import user from "@/routes/user";
 import { Form } from "@inertiajs/react";
 import { LayoutList, SquarePlus } from 'lucide-react';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function CreateToDoDialog() {
     const [ title, setTitle ] = useState("");
+    const [ openDialog, setOpenDialog ] = useState(false);
     const { setIsLoading } = useLoading();
 
+    useEffect(() => {
+        if (openDialog === false) return;
+
+        return setTitle("");
+    }, [openDialog])
+
     return (
-        <Dialog>
+        <Dialog
+            open={openDialog}
+            onOpenChange={setOpenDialog}
+        >
             <DialogTrigger
                 asChild
             >
@@ -51,6 +62,21 @@ export function CreateToDoDialog() {
                     method="post"
                     onStart={() => setIsLoading(true)}
                     onFinish={() => setIsLoading(false)}
+                    onError={(error) => {
+                        if (typeof error === 'string') {
+                            toast.error(error);
+                        } else if (typeof error === 'object' && error !== null) {
+                            Object.values(error).forEach(msg => {
+                                toast.error(msg as string);
+                            });
+                        }
+
+                        setOpenDialog(false);
+                    }}
+                    onSuccess={() => {
+                        toast.success(`Successfully created new todo container - "${title}"`);
+                        setOpenDialog(false);
+                    }}
                     className="space-y-4"
                 >
                     <div>

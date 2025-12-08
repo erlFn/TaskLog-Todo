@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Services\TodoService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,10 @@ use Inertia\Inertia;
 
 class ToDoController extends Controller
 {
+    public function __construct(
+        private TodoService $todoService,
+    ){}
+
     public function index() 
     {
         return Inertia::render('User/todo/index');
@@ -22,13 +27,28 @@ class ToDoController extends Controller
         try {
             $user = Auth::user();
 
-            dd($request->all());
-
             $validated = $request->validate([
                 'title' => ['required', 'string', 'max:255']
             ]);
 
-            dd($validated);
+            $existingTitle = $this->todoService->existingTitle($validated['title']);
+
+            if ($existingTitle) { 
+                throw ValidationException::withMessages([
+                    'title' => 'Title already exist, try a different title'
+                ]);
+            }
+
+            $createdTodo = $this->todoService->createTodoContainer($validated, $user);
+
+            if (!$createdTodo) {
+                Log::error('Fail to create new todo container', [
+                    'user_id' => $user->id,
+                    'todo_title' => $validated['title']
+                ]);
+            }
+
+            return redirect()->route('user.todo');
         } catch (ValidationException $e) {
             throw $e;
         } catch (Exception $e) {
