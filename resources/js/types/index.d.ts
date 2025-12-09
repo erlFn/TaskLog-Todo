@@ -61,6 +61,7 @@ export interface Todo {
     title: string;
     creator: User;
     lists: Lists[];
+    list_count: number;
     created_at: string;
     updated_at: string;
 }

@@ -17,6 +17,10 @@ class Todo extends Model
         'created_by',
     ];
 
+    protected $appends = [
+        'list_count',
+    ];
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -25,6 +29,12 @@ class Todo extends Model
     public function lists(): HasMany
     {
         return $this->hasMany(TodoList::class);
+    
+    }
+
+    public function getListCountAttribute(): ?int
+    {
+        return $this->lists()->count();
     }
     
     public function scopeOwnedBy(Builder $query, int $userId): Builder
