@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Todo;
 use App\Services\TodoService;
 use Exception;
 use Illuminate\Http\Request;
@@ -19,7 +20,16 @@ class ToDoController extends Controller
 
     public function index() 
     {
-        return Inertia::render('User/todo/index');
+        $user = Auth::user();
+
+        $todos = Todo::query()
+            ->ownedBy($user->id)
+            ->with(['lists', 'creator'])
+            ->get();
+
+        return Inertia::render('User/todo/index', [
+            'todos' => $todos
+        ]);
     }
 
     public function store(Request $request)
