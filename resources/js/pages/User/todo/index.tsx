@@ -37,12 +37,12 @@ export default function Index({ todos } : ContentProps) {
                                 <p className="text-neutral-700">
                                     {todo.title}
                                 </p>
-                                <div className="flex flex-col gap-1">
-                                    <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                                        <p>Total List</p>
+                                <div className="flex flex-col gap-2">
+                                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
                                         <ListTodo
                                             className="size-4"
                                         />
+                                        <p>Total List</p>
                                     </span>
                                     <Badge
                                         className="bg-blue-400"
