@@ -69,4 +69,13 @@ class ToDoController extends Controller
             return redirect()->route('user.todo')->with('error', 'An error occured in creating new container. Please try again');
         }
     }
+
+    public function view(Todo $todo) 
+    {
+        $todo->load(['lists', 'creator']);
+
+        return Inertia::render('User/todo/show', [
+            'todo' => $todo,
+        ]);
+    }
 }

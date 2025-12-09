@@ -15,4 +15,5 @@ Route::middleware('user')->name('user.')->group(function () {
     
     Route::get('/todo', [ToDoController::class, 'index'])->name('todo');
     Route::post('/todo', [ToDoController::class, 'store'])->name('todo.store');
+    Route::get('/todo/{todo}', [ToDoController::class, 'view'])->name('todo.view');
 });

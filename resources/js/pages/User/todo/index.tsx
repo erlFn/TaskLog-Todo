@@ -6,6 +6,7 @@ import { LabelField } from "@/components/Common/label-field";
 import { Box }  from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { ListTodo } from 'lucide-react';
+import { router } from "@inertiajs/react";
 
 interface ContentProps {
     todos: Todo[];
@@ -15,6 +16,10 @@ export default function Index({ todos } : ContentProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'ToDo', href: user.todo.url() }
     ];
+
+    const handleRedirect = (todo: Todo) => {
+        router.get(user.todo.view(todo));
+    };
 
     return (
         <AppLayout
@@ -32,6 +37,7 @@ export default function Index({ todos } : ContentProps) {
                     <div className="grid grid-cols-5 gap-4">
                         {todos.map(todo => (
                             <div
+                                onClick={() => handleRedirect(todo)}
                                 className="border p-4 rounded-md hover:border-blue-400/20 hover:bg-blue-400/4 transition-all duration-250 space-y-4"
                             >
                                 <p className="text-neutral-700">
