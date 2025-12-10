@@ -72,7 +72,12 @@ class ToDoController extends Controller
 
     public function view(Todo $todo) 
     {
-        $todo->load(['lists', 'creator']);
+        $todo->load([
+            'lists' => function ($query) {
+                $query->orderBy('created_at', 'asc');
+            },
+            'creator'
+        ]);
 
         return Inertia::render('User/todo/show', [
             'todo' => $todo,
