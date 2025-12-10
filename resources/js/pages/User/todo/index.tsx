@@ -7,18 +7,27 @@ import { Box }  from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { ListTodo } from 'lucide-react';
 import { router } from "@inertiajs/react";
+import { useLoading } from "@/hooks/use-loading";
 
 interface ContentProps {
     todos: Todo[];
 }
 
 export default function Index({ todos } : ContentProps) {
+    const { setIsLoading } = useLoading();
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'ToDo', href: user.todo.url() }
     ];
 
     const handleRedirect = (todo: Todo) => {
-        router.get(user.todo.view(todo));
+        router.get(user.todo.view(todo), {}, {
+            onStart: () => {
+                setIsLoading(true);
+            },
+            onFinish: () => {
+                setIsLoading(false);
+            }
+        });
     };
 
     return (

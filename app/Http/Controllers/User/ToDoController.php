@@ -24,7 +24,7 @@ class ToDoController extends Controller
 
         $todos = Todo::query()
             ->ownedBy($user->id)
-            ->with(['lists', 'creator'])
+            ->with(['creator'])
             ->get();
 
         return Inertia::render('User/todo/index', [
