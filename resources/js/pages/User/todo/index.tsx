@@ -47,7 +47,7 @@ export default function Index({ todos } : ContentProps) {
                         {todos.map(todo => (
                             <div
                                 onClick={() => handleRedirect(todo)}
-                                className="border p-4 rounded-md hover:border-blue-400/20 hover:bg-blue-400/4 transition-all duration-250 space-y-4"
+                                className="border p-4 rounded-md hover:border-blue-400/20 hover:bg-blue-400/4 transition-all duration-250 space-y-4 cursor-pointer"
                             >
                                 <p className="text-neutral-700">
                                     {todo.title}
