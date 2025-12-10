@@ -3,11 +3,30 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useLoading } from "@/hooks/use-loading";
+import { TitleCase } from "@/lib/utils";
+import user from "@/routes/user";
+import { Form } from "@inertiajs/react";
 import { LayoutList, SquarePlus } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function CreateToDoDialog() {
+    const [ title, setTitle ] = useState("");
+    const [ openDialog, setOpenDialog ] = useState(false);
+    const { setIsLoading } = useLoading();
+
+    useEffect(() => {
+        if (openDialog === false) return;
+
+        return setTitle("");
+    }, [openDialog])
+
     return (
-        <Dialog>
+        <Dialog
+            open={openDialog}
+            onOpenChange={setOpenDialog}
+        >
             <DialogTrigger
                 asChild
             >
@@ -17,7 +36,7 @@ export function CreateToDoDialog() {
                 >
                     <LayoutList/>
                     <p>
-                        Create To Do Container
+                        Create To do Container
                     </p>
                 </Button>
             </DialogTrigger>
@@ -30,31 +49,58 @@ export function CreateToDoDialog() {
                             className="size-5"
                         />
                         <p>
-                            Create To Do Container
+                            Create To do Container
                         </p>
                     </DialogTitle>
                     <DialogDescription>
-                        Enter a title for your To Do Container
+                        Enter a title for your To do Container
                     </DialogDescription>
                 </DialogHeader>
                 <Separator/>
-                <div>
-                    <FormField
-                        label="* Title"
-                    >
-                        <Input
-                            placeholder="ToDo Container Title"
-                            className="focus-visible:ring-0"
-                        />
-                    </FormField>
-                </div>
-                <DialogFooter>
-                    <Button
-                        className="w-full cursor-pointer"
-                    >
-                        <SquarePlus/>
-                    </Button>
-                </DialogFooter> 
+                <Form
+                    action={user.todo.store()}
+                    method="post"
+                    onStart={() => setIsLoading(true)}
+                    onFinish={() => setIsLoading(false)}
+                    onError={(error) => {
+                        if (typeof error === 'string') {
+                            toast.error(error);
+                        } else if (typeof error === 'object' && error !== null) {
+                            Object.values(error).forEach(msg => {
+                                toast.error(msg as string);
+                            });
+                        }
+
+                        setOpenDialog(false);
+                    }}
+                    onSuccess={() => {
+                        toast.success(`Successfully created new todo container - "${title}"`);
+                        setOpenDialog(false);
+                    }}
+                    className="space-y-4"
+                >
+                    <div>
+                        <FormField
+                            label="* Title"
+                        >
+                            <Input
+                                name="title"
+                                value={title}
+                                onChange={e => setTitle(TitleCase(e.target.value))}
+                                placeholder="Container Title"
+                                className="focus-visible:ring-0"
+                            />
+                        </FormField>
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            type="submit"
+                            className="w-full cursor-pointer"
+                        >
+                            <SquarePlus/>
+                        </Button>
+                    </DialogFooter> 
+                </Form>
             </DialogContent>
         </Dialog>
     );

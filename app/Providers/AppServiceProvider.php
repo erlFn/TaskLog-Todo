@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\RegisterService;
 use App\Services\TaskService;
+use App\Services\TodoService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,7 +21,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(TaskService::class, function ($app) {
             return new TaskService();
         });
-    
+
+        $this->app->singleton(TodoService::class, function($app) {
+            return new TodoService();
+        });
     }
 
     /**

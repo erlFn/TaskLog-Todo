@@ -55,3 +55,21 @@ export interface Task {
     created_at: string;
     updated_at: string;
 }
+
+export interface Todo {
+    id: number;
+    title: string;
+    creator: User;
+    lists: Lists[];
+    list_count: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Lists {
+    id: number;
+    description: string;
+    status: string;
+    created_at: string;
+    updated_at: string;
+}
