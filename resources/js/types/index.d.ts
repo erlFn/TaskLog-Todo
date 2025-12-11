@@ -59,6 +59,7 @@ export interface Task {
 export interface Todo {
     id: number;
     title: string;
+    slug: string;
     creator: User;
     lists: Lists[];
     list_count: number;

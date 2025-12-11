@@ -83,4 +83,20 @@ class ToDoController extends Controller
             'todo' => $todo,
         ]);
     }
+
+    public function destroy(Todo $todo)
+    {
+        try {
+            $todo->delete();
+
+            return redirect()->route('user.todo');
+        } catch (Exception $e) {
+            Log::error("There's an error in deleting todo container in controller", [
+                'error' => $e->getMessage(),
+                'todo_id' => $todo->getKey()
+            ]);
+
+            return redirect()->route('user.todo');
+        }
+    }
 }

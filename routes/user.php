@@ -17,6 +17,7 @@ Route::middleware('user')->name('user.')->group(function () {
     Route::get('/todo', [ToDoController::class, 'index'])->name('todo');
     Route::post('/todo', [ToDoController::class, 'store'])->name('todo.store');
     Route::get('/todo/{todo:slug}', [ToDoController::class, 'view'])->name('todo.view');
+    Route::post('/todo/{todo}', [ToDoController::class, 'destroy'])->name('todo.delete');
     Route::post('/todo/{todo}/store', [TodoListController::class, 'store'])->name('todo.list.store');
     Route::put('/todo/{todo}/{todoList}/update', [TodoListController::class, 'update'])->name('todo.list.update');
     Route::post('/todo/{todo}/{todoList}/delete', [TodoListController::class, 'destroy'])->name('todo.list.delete');

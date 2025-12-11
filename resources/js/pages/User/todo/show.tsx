@@ -1,4 +1,5 @@
 import { FormField } from "@/components/Form/form-field";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { Form, router } from "@inertiajs/react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { MoveLeft, Trash2, Plus } from 'lucide-react';
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface ContentProps {
     todo: Todo;
@@ -21,7 +23,7 @@ export default function Show({ todo } : ContentProps) {
     const [ description, setDescription ] = useState("");
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'To Do', href: user.todo.url() },
-        { title: todo.title, href: user.todo.view(todo) }
+        { title: todo.title, href: user.todo.view(todo.slug) }
     ];
 
     const getRelativeTime = (date: string) => {
@@ -63,6 +65,20 @@ export default function Show({ todo } : ContentProps) {
         });
     };
 
+    const handleTodoDelete = () => {
+        router.post(user.todo.delete(todo), {}, {
+            onStart: () => {
+                setIsLoading(true);
+            },
+            onSuccess: () => {
+                toast.success(`Successfully deleted "${todo.title}"`);
+            },
+            onFinish: () => {
+                setIsLoading(false);
+            }
+        });
+    }
+
     return (
         <AppLayout
             breadcrumbs={breadcrumbs}
@@ -81,47 +97,88 @@ export default function Show({ todo } : ContentProps) {
                             Back
                         </p>
                     </Button>
-                    <Dialog>
-                        <DialogTrigger
-                            asChild
-                        >
-                            <Button
-                                className="cursor-pointer bg-blue-400 hover:bg-blue-500 hover:text-secondary transition-all duration-250 flex items-center gap-2"
+                    <div className="flex items-center gap-2">
+                        <AlertDialog>
+                            <AlertDialogTrigger
+                                asChild
                             >
-                                <Plus
-                                    className="size-4"
-                                />
-                                <p>
-                                    Create new list
-                                </p>
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <Form
-                                action={user.todo.list.store(todo)}
-                                method="post"
-                                onFinish={() => setDescription("")}
-                            >   
-                                <FormField
-                                    label="* Description"
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="bg-red-500 text-secondary hover:bg-red-600 hover:text-secondary cursor-pointer"
                                 >
-                                    <Input
-                                        name="description"
-                                        value={description}
-                                        onChange={e => setDescription(e.target.value)}
+                                    <Trash2
+                                        className="size-4"
                                     />
-                                </FormField>
-                                <DialogFooter>
-                                    <Button
-                                        type="submit"
-                                        className="w-full mt-4 cursor-pointer"
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Are you sure you want to delete "{todo.title}"?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete <span className="text-red-600">"{todo.title}"</span> from our server.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel
+                                        className="cursor-pointer"
                                     >
-                                        Submit
-                                    </Button>
-                                </DialogFooter>
-                            </Form>
-                        </DialogContent>
-                    </Dialog>
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={handleTodoDelete}
+                                        className="cursor-pointer"
+                                    >
+                                        Delete Permanently
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                        <Dialog>
+                            <DialogTrigger
+                                asChild
+                            >
+                                <Button
+                                    className="cursor-pointer bg-blue-400 hover:bg-blue-500 hover:text-secondary transition-all duration-250 flex items-center gap-2"
+                                >
+                                    <Plus
+                                        className="size-4"
+                                    />
+                                    <p>
+                                        Create new list
+                                    </p>
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <Form
+                                    action={user.todo.list.store(todo)}
+                                    method="post"
+                                    onFinish={() => setDescription("")}
+                                >   
+                                    <FormField
+                                        label="* Description"
+                                    >
+                                        <Input
+                                            name="description"
+                                            value={description}
+                                            onChange={e => setDescription(e.target.value)}
+                                        />
+                                    </FormField>
+                                    <DialogFooter>
+                                        <Button
+                                            type="submit"
+                                            className="w-full mt-4 cursor-pointer"
+                                        >
+                                            Submit
+                                        </Button>
+                                    </DialogFooter>
+                                </Form>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                 </div>
                 <div className="grid gap-2">
                     {todo.lists.map(list => {
