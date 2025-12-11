@@ -7,6 +7,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class TodoService
 {
@@ -44,6 +45,7 @@ class TodoService
     {
         return [
             'title' => $data['title'],
+            'slug' => Str::slug($data['title']),
             'created_by' => $userId
         ];
     }
