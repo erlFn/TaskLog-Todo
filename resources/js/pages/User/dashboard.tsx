@@ -51,14 +51,24 @@ export default function Dashboard({ tasks, taskCount, todos, todosCount } : Cont
                     showAll={true}
                     href={user.tasks.url()}
                 >
-                    <div className="grid grid-cols-5 gap-2">
-                        {tasks.data.map(task => (
-                            <DataDialog
-                                key={task.id}
-                                tasks={task}
-                            />
-                        ))}
-                    </div>
+                    {tasks.data.length > 0 ? (
+                        <div className="grid grid-cols-5 gap-2">
+                            {tasks.data.map(task => (
+                                <DataDialog
+                                    key={task.id}
+                                    tasks={task}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-center">
+                            <Badge
+                                className="px-4 bg-blue-400"
+                            >
+                                No tasks yet.
+                            </Badge>
+                        </div>
+                    )}
                 </LabelField>
                 <LabelField
                     icon={LayoutList}
@@ -68,31 +78,41 @@ export default function Dashboard({ tasks, taskCount, todos, todosCount } : Cont
                     href={user.todo.url()}
                     isLast={true}
                 >
-                    <div className="grid grid-cols-5 gap-2">
-                        {todos.data.map(todo => (
-                            <div
-                                onClick={() => handleRedirect(todo)}
-                                className="border p-4 rounded-md hover:border-blue-400/20 hover:bg-blue-400/4 transition-all duration-250 space-y-4 cursor-pointer"
-                            >
-                                <p className="text-neutral-700">
-                                    {todo.title}
-                                </p>
-                                <div className="flex flex-col gap-2">
-                                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                                        <ListTodo
-                                            className="size-4"
-                                        />
-                                        <p>Total List</p>
-                                    </span>
-                                    <Badge
-                                        className="bg-blue-400"
-                                    >
-                                        {todo.list_count}
-                                    </Badge>
+                    {todos.data.length > 0 ? (
+                        <div className="grid grid-cols-5 gap-2">
+                            {todos.data.map(todo => (
+                                <div
+                                    onClick={() => handleRedirect(todo)}
+                                    className="border p-4 rounded-md hover:border-blue-400/20 hover:bg-blue-400/4 transition-all duration-250 space-y-4 cursor-pointer"
+                                >
+                                    <p className="text-neutral-700">
+                                        {todo.title}
+                                    </p>
+                                    <div className="flex flex-col gap-2">
+                                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                                            <ListTodo
+                                                className="size-4"
+                                            />
+                                            <p>Total List</p>
+                                        </span>
+                                        <Badge
+                                            className="bg-blue-400"
+                                        >
+                                            {todo.list_count}
+                                        </Badge>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-center">
+                            <Badge
+                                className="px-4 bg-blue-400"
+                            >
+                                No Todo lists yet.
+                            </Badge>
+                        </div>
+                    )}
                 </LabelField>
             </div>
         </AppLayout>
