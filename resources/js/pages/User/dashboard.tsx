@@ -40,7 +40,7 @@ export default function Dashboard({ tasks, taskCount, todos, todosCount } : Cont
                     <div className="grid grid-cols-2 gap-2">
                         <DataMetrics
                             tasksCount={taskCount}
-                            todoCount={100}
+                            todoCount={todosCount}
                         />
                     </div>
                 </LabelField>
