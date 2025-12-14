@@ -62,7 +62,7 @@ export default function Dashboard({ tasks, tasksCount, todos, todosCount } : Con
                     showAll={true}
                     href={admin.todo.url()}
                     isLast={true}
-                    count={2}
+                    count={todosCount}
                 >
                     <div className="grid grid-cols-4 gap-2">
                         {todos.data.map(todo => (
