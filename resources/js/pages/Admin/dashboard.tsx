@@ -1,10 +1,11 @@
 import { DataMetrics } from "@/components/Admin/dashboard/data-metrics";
 import { DataDialog } from "@/components/Common/data-dialog";
 import { LabelField } from "@/components/Common/label-field";
-import { RenderSkeleton } from "@/components/Common/render-skeleton";
+import { TodoContainer } from "@/components/Common/todo/todo-container";
 import AppLayout from "@/layouts/app-layout";
 import { welcome } from "@/routes";
-import { BreadcrumbItem, Task } from "@/types";
+import admin from "@/routes/admin";
+import { BreadcrumbItem, Task, Todo } from "@/types";
 import { HardDrive, Clipboard, ListTodo } from "lucide-react";
 
 interface ContentProps {
@@ -12,9 +13,13 @@ interface ContentProps {
         data: Task[];
     };
     tasksCount: number;
+    todos: {
+        data: Todo[];
+    };
+    todosCount: number;
 }
 
-export default function Dashboard({ tasks, tasksCount } : ContentProps) {
+export default function Dashboard({ tasks, tasksCount, todos, todosCount } : ContentProps) {
     const breadCrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: welcome.url() },
     ];
@@ -31,7 +36,7 @@ export default function Dashboard({ tasks, tasksCount } : ContentProps) {
                     <div className="grid grid-cols-2 gap-4">
                         <DataMetrics
                             tasksCount={tasksCount}
-                            todoCount={200}
+                            todoCount={todosCount}
                         />
                     </div>
                 </LabelField>
@@ -39,8 +44,9 @@ export default function Dashboard({ tasks, tasksCount } : ContentProps) {
                     icon={Clipboard}
                     label="Tasks Data"
                     showAll={true}
-                    count={4}
-                >
+                    href={admin.tasks.url()}
+                    count={tasksCount}
+            >
                     <div className="grid grid-cols-3 gap-2">
                         {tasks.data.map(task => (
                             <DataDialog
@@ -54,13 +60,17 @@ export default function Dashboard({ tasks, tasksCount } : ContentProps) {
                     icon={ListTodo}
                     label="To Do Data"
                     showAll={true}
+                    href={admin.todo.url()}
                     isLast={true}
                     count={2}
                 >
                     <div className="grid grid-cols-4 gap-2">
-                        <RenderSkeleton
-                            count={2}
-                        />
+                        {todos.data.map(todo => (
+                            <TodoContainer
+                                key={todo.id}
+                                todo={todo}
+                            />
+                        ))}
                     </div>
                 </LabelField>
             </div>

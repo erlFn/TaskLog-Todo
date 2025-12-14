@@ -1,9 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { useLoading } from "@/hooks/use-loading";
 import user from "@/routes/user";
-import { Todo } from "@/types";
-import { router } from "@inertiajs/react";
+import { SharedData, Todo } from "@/types";
+import { router, usePage } from "@inertiajs/react";
 import { ListTodo } from 'lucide-react';
+import { Users2 } from 'lucide-react';
 
 interface ContentProps {
     todo: Todo;
@@ -11,6 +12,7 @@ interface ContentProps {
 
 export function TodoContainer({ todo } : ContentProps) {
     const { setIsLoading } = useLoading();
+    const { auth } = usePage<SharedData>().props;
 
     const handleRedirect = () => {
         router.get(user.todo.view(todo), {}, {
@@ -48,6 +50,23 @@ export function TodoContainer({ todo } : ContentProps) {
                     {todo.list_count}
                 </Badge>
             </div>
+            {auth.user.role === 'admin' && (
+                <div className="flex items-center gap-4">
+                    <p className="text-muted-foreground text-xs">
+                        Created by:
+                    </p>
+                    <Badge
+                        className="flex items-center gap-2"
+                    >
+                        <Users2
+                            className="size-4"
+                        />
+                        <p>
+                            {todo.creator.name}
+                        </p>
+                    </Badge>
+                </div>
+            )}
         </div>
     );
 }

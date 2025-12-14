@@ -18,9 +18,17 @@ class DashboardController extends Controller
         $tasksCount = Task::query()
             ->count();
 
+        $todos = Todo::with(['creator', 'lists'])
+            ->simplePaginate(15);
+    
+        $todosCount = Todo::query()
+            ->count();
+
         return Inertia::render('Admin/dashboard', [
             'tasks' => $tasks,
             'tasksCount' => $tasksCount,
+            'todos' => $todos,
+            'todosCount' => $todosCount,
         ]);
     }
 }
