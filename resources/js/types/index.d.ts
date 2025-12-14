@@ -52,6 +52,7 @@ export interface Task {
     description: string;
     status: string;
     priority: string;
+    creator: User;
     created_at: string;
     updated_at: string;
 }

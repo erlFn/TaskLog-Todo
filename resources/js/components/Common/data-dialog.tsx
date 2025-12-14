@@ -1,17 +1,20 @@
-import { Task } from "@/types";
+import { SharedData, Task } from "@/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { formatDate, formatDistanceToNow, parseISO } from "date-fns";
 import { Badge } from "../ui/badge";
-import { Flag, Calendar, Calendar1} from 'lucide-react';
+import { Flag, Calendar, Calendar1, Users2 } from 'lucide-react';
 import { DeleteButton } from "./tasks/delete-button";
 import { EditDialog } from "./tasks/edit-dialog";
+import { usePage } from "@inertiajs/react";
 
 interface ContentProps {
     tasks: Task;
 }
 
 export function DataDialog({ tasks } : ContentProps) {
+    const { auth } = usePage<SharedData>().props;
+
     const getDate = (date: string) => {
         return formatDate(parseISO(date), 'yyyy, MMMM dd - h:mm a');
     };
@@ -63,6 +66,21 @@ export function DataDialog({ tasks } : ContentProps) {
                             {priority.label}
                         </p>
                     </span>
+                    {auth.user.role === 'admin' && (
+                        <span className="flex items-center gap-2">
+                            <p className="text-xs text-muted-foreground">
+                                Created by:
+                            </p>
+                            <Badge className="flex items-center gap-2">
+                                <Users2
+                                    className="size-4"
+                                />
+                                <p>
+                                    {tasks.creator.name}
+                                </p>
+                            </Badge>
+                        </span>
+                    )}
                 </div>
             </DialogTrigger>
             <DialogContent>
@@ -70,8 +88,27 @@ export function DataDialog({ tasks } : ContentProps) {
                     <DialogTitle className="font-normal">
                         {tasks.title}
                     </DialogTitle>
-                    <DialogDescription className="text-sm text-muted-foreground break-all">
-                        {tasks.description}
+                    <DialogDescription
+                        className="flex flex-col gap-4"
+                    >
+                        <p className="text-sm text-muted-foreground break-all">
+                            {tasks.description}
+                        </p>
+                        {auth.user.role === 'admin' && (
+                            <span className="flex items-center gap-2">
+                                <p className="text-xs text-muted-foreground">
+                                    Created by:
+                                </p>
+                                <Badge className="flex items-center gap-2">
+                                    <Users2
+                                        className="size-4"
+                                    />
+                                    <p>
+                                        {tasks.creator.name}
+                                    </p>
+                                </Badge>
+                            </span>
+                        )}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="border-t flex justify-between">
