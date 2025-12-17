@@ -31,4 +31,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Task::class, 'created_by');
     }
+
+    public function todos() : HasMany
+    {
+        return $this->hasMany(Todo::class, 'created_by');
+    }
 }

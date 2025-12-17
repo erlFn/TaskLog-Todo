@@ -1,20 +1,31 @@
 import { LabelField } from "@/components/Common/label-field";
-import { RenderSkeleton } from "@/components/Common/render-skeleton";
 import AppLayout from "@/layouts/app-layout";
 import admin from "@/routes/admin";
-import { BreadcrumbItem } from "@/types";
+import { BreadcrumbItem, User } from "@/types";
 import { ListTodo } from 'lucide-react';
+import TodoFilter from "./todo-filter";
+import { TodoContainer } from "@/components/Common/todo/todo-container";
 
-const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'ToDo', href: admin.todo.url() }
-];
+interface ContentProps {
+    users: User[];
+    search: string;
+}
 
-export default function Index() {
+export default function Index({ users, search } : ContentProps) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        { title: 'ToDo', href: admin.todo.url() }
+    ];
+
     return (
         <AppLayout
             breadcrumbs={breadcrumbs}
         >
             <div className="space-y-4">
+                <div className="flex items-center justify-end">
+                    <TodoFilter
+                        search={search}
+                    />
+                </div>
                 <LabelField
                     icon={ListTodo}
                     label="To Do Overview"
@@ -23,10 +34,15 @@ export default function Index() {
                     count={12}
                 >
                     <div className="grid grid-cols-5 gap-4">
-                        <RenderSkeleton
-                            count={12}
-                            hasThin={true}
-                        />
+                        {users.map(user => (
+                            user.todos.map(data => (
+                                <TodoContainer
+                                    key={data.id}
+                                    todo={data}
+                                    isAdmin={true}
+                                />
+                            ))
+                        ))}
                     </div>
                 </LabelField>
             </div>

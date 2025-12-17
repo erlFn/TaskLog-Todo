@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { useLoading } from "@/hooks/use-loading";
+import admin from "@/routes/admin";
 import user from "@/routes/user";
 import { SharedData, Todo } from "@/types";
 import { router, usePage } from "@inertiajs/react";
@@ -8,13 +9,25 @@ import { Users2 } from 'lucide-react';
 
 interface ContentProps {
     todo: Todo;
+    isAdmin?: boolean;
 }
 
-export function TodoContainer({ todo } : ContentProps) {
+export function TodoContainer({ todo, isAdmin } : ContentProps) {
     const { setIsLoading } = useLoading();
     const { auth } = usePage<SharedData>().props;
 
     const handleRedirect = () => {
+        if (isAdmin) {
+            return router.get(admin.todo.show(todo), {}, {
+                onStart: () => {
+                    setIsLoading(true);
+                },
+                onFinish: () => {
+                    setIsLoading(false);
+                }
+            });
+        }
+
         router.get(user.todo.view(todo), {}, {
             onStart: () => {
                 setIsLoading(true);
