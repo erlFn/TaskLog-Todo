@@ -26,6 +26,7 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
+    todos: Todo[];
     [key: string]: unknown; // This allows for additional properties...
 }
 
@@ -52,6 +53,7 @@ export interface Task {
     description: string;
     status: string;
     priority: string;
+    creator: User;
     created_at: string;
     updated_at: string;
 }

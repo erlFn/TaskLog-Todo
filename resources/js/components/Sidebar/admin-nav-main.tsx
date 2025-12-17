@@ -3,6 +3,7 @@ import { NavItem } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import { LayoutDashboard, ClipboardList, ListTodo } from 'lucide-react';
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
+import { useLoading } from "@/hooks/use-loading";
 
 const navItems: NavItem[] = [
     {
@@ -24,6 +25,7 @@ const navItems: NavItem[] = [
 
 export function AdminNavMain() {
     const page = usePage();
+    const { setIsLoading } = useLoading();
 
     return (
         <SidebarGroup>
@@ -44,6 +46,7 @@ export function AdminNavMain() {
                                 >
                                     <Link
                                         href={item.href}
+                                        onClick={() => setIsLoading(true)}
                                         className={`py-5 transition-all duration-250 ${activePage ? 'shadow-xs text-blue-500 bg-background pointer-events-none' : 'bg-neutral-600/2 text-muted-foreground'}`}
                                     >
                                         {item.icon && (

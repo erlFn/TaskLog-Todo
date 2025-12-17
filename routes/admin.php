@@ -14,4 +14,5 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
     Route::get('/todo', [ToDoController::class, 'index'])->name('todo');
+    Route::get('/todo/{todo:slug}', [ToDoController::class, 'view'])->name('todo.show');
 });

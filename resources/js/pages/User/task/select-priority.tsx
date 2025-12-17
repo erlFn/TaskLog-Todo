@@ -41,7 +41,7 @@ export function SelectPriority({ value = "", onValueChange, placeholder = "Selec
     return (
         <Select
             name="priority"
-            value={value || undefined}
+            value={value || ""}
             onValueChange={onValueChange}
         >
             <SelectTrigger

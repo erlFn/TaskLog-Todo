@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use App\Services\TaskService;
+use App\TaskStatus;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,27 +21,44 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         try {
-            $filters = $request->only(['search', 'status', 'priority']);
-            
-            $query = Task::with('creator');
-            
-            if (!empty($filters['status'])) {
-                $query->where('status', $filters['status']);
+            $search = strtolower($request->input('search'));
+            $priority = $request->input('priority');
+
+            $filterQuery = Task::query()
+                ->when($search, function ($query, $search) {
+                    $query->whereRaw('LOWER(title) LIKE ?', "%{$search}%");
+                })
+                ->when($priority, function ($query, $priority) {
+                    $query->where('priority', $priority);
+                })
+                ->recent();
+
+            $tasks = (clone $filterQuery)->with(['creator'])->get();
+            $tasksCount = Task::query()->count();
+
+            $stats = [];
+
+            foreach(TaskStatus::cases() as $status) {
+                $stats[$status->value] = Task::query()
+                    ->where('status', $status->value)
+                    ->when($search, function ($query, $search) {
+                        $query->whereRaw('LOWER(title) LIKE ?', "%{$search}%");
+                    })
+                    ->when($priority, function ($query, $priority) {
+                        $query->where('priority', $priority);
+                    })
+                    ->count();
             }
-            
-            if (!empty($filters['priority'])) {
-                $query->where('priority', $filters['priority']);
-            }
-            
-            if (!empty($filters['search'])) {
-                $query->where('title', 'like', "%{$filters['search']}%");
-            }
-            
-            $tasks = $query->latest()->paginate(15);
 
             return Inertia::render('Admin/task/index', [
                 'tasks' => $tasks,
-                'filters' => $filters
+                'tasksCount' => $tasksCount,
+                'filters' => [
+                    'search' => $search,
+                    'priority' => $priority,
+                ],
+                'stats' => $stats,
+                'taskStatus' => TaskStatus::options(),
             ]);
             
         } catch (Exception $e) {

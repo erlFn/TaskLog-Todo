@@ -12,7 +12,7 @@ export function DataMetrics({ tasksCount, todoCount } : ContentProps) {
         const elements = [];
 
         elements.push(
-            <p className="text-sm">
+            <p className="text-sm" key={label}>
                 {label}
             </p>
         );

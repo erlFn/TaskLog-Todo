@@ -1,18 +1,33 @@
 import { Badge } from "@/components/ui/badge";
 import { useLoading } from "@/hooks/use-loading";
+import admin from "@/routes/admin";
 import user from "@/routes/user";
-import { Todo } from "@/types";
-import { router } from "@inertiajs/react";
+import { SharedData, Todo } from "@/types";
+import { router, usePage } from "@inertiajs/react";
 import { ListTodo } from 'lucide-react';
+import { Users2 } from 'lucide-react';
 
 interface ContentProps {
     todo: Todo;
+    isAdmin?: boolean;
 }
 
-export function TodoContainer({ todo } : ContentProps) {
+export function TodoContainer({ todo, isAdmin } : ContentProps) {
     const { setIsLoading } = useLoading();
+    const { auth } = usePage<SharedData>().props;
 
     const handleRedirect = () => {
+        if (isAdmin) {
+            return router.get(admin.todo.show(todo), {}, {
+                onStart: () => {
+                    setIsLoading(true);
+                },
+                onFinish: () => {
+                    setIsLoading(false);
+                }
+            });
+        }
+
         router.get(user.todo.view(todo), {}, {
             onStart: () => {
                 setIsLoading(true);
@@ -48,6 +63,23 @@ export function TodoContainer({ todo } : ContentProps) {
                     {todo.list_count}
                 </Badge>
             </div>
+            {auth.user.role === 'admin' && (
+                <div className="flex items-center gap-4">
+                    <p className="text-muted-foreground text-xs">
+                        Created by:
+                    </p>
+                    <Badge
+                        className="flex items-center gap-2"
+                    >
+                        <Users2
+                            className="size-4"
+                        />
+                        <p>
+                            {todo.creator.name}
+                        </p>
+                    </Badge>
+                </div>
+            )}
         </div>
     );
 }
